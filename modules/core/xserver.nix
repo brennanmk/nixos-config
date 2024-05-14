@@ -2,10 +2,16 @@
 {
   services.xserver = {
     enable = true;
+
     xkb.layout = "us";
-    displayManager = {
-      gdm.enable = true;
-      defaultSession = "none+i3";
+
+    desktopManager = {
+      xterm.enable = false;
+      xfce = {
+        enable = true;
+        noDesktop = true;
+        enableXfwm = false;
+      };
     };
 
     windowManager.i3 = {
@@ -17,6 +23,11 @@
         rofi
         i3blocks
      ];
+    };
+
+    displayManager = {
+      gdm.enable = true;
+      defaultSession = "xfce+i3";
     };
 
     libinput = {

@@ -2,6 +2,7 @@
 
 {
   programs.rofi = {
-    enable = true;   
+    enable = true;
+    plugins = [pkgs.rofi-calc];
   };
 }

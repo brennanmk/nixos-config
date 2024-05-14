@@ -42,6 +42,18 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
 
+(add-to-list 'auto-mode-alist '("\\.launch$" . xml-mode))
+(add-to-list 'auto-mode-alist '("\\.ino$" . cpp-mode))
+
+(map!
+ :leader
+ :desc "Save file" "SPC" #'save-buffer
+ :desc "Treemacs Focus" "d" #'treemacs-select-window
+ :desc "Window Left" "<left>" #'evil-window-left
+ :desc "Window right" "<right>" #'evil-window-right
+ :desc "Window up" "<up>" #'evil-window-up
+ :desc "Window down" "<down>" #'evil-window-down
+ )
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -74,3 +86,7 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+(setq remote-file-name-inhibit-cache nil)
+(setq vc-ignore-dir-regexp (format "%s\|%s" vc-ignore-dir-regexp tramp-file-name-regexp))
+
+(setq tramp-verbose 1)

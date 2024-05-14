@@ -27,15 +27,23 @@
     zotero
     discord
     polybar
-    
+    obsidian
+
+    #xfce
+    xfce.xfce4-pulseaudio-plugin
+    xfce.xfce4-panel
+    pulseaudio
+    blueberry
+
+    python312
+    zlib
     psmisc
-    python3
     cmatrix
     gparted                           # partition manager
     ffmpeg
     imv                               # image viewer
     libnotify
-	  man-pages					            	  # extra man pages
+	man-pages					            	  # extra man pages
     mpv                               # video player
     ncdu                              # disk space
     openssl

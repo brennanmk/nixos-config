@@ -114,8 +114,7 @@ bindsym $mod+n exec --no-startup-id flash_window
 
 #********************************************************************************
 exec systemctl --user restart polybar.service
-exec --no-startup-id feh --bg-scale ~/Pictures/wallpapers/verticle.jpg --bg-scale ~/Pictures/wallpapers/verticle.jpg --bg-scale ~/Pictures/wallpapers/wallpaper.png
-exec --no-startup-id xrandr --output DP-2 --rotate right --right-of DP-4 --output HDMI-0 --rotate left --left-of DP-4 --output DP-4 -r 144
+exec --no-startup-id feh --bg-scale ~/Pictures/wallpapers/verticle.jpg
 exec --no-startup-id bash ~/.config/polybar/hack/launch.sh
 
 #********************************************************************************

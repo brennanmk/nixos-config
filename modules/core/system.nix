@@ -24,6 +24,8 @@
     git
   ];
 
+  environment.variables.PATH = "$PATH:$HOME/.local/bin";
+
   services.automatic-timezoned.enable = true;
   i18n.defaultLocale = "en_US.UTF-8";
   nixpkgs.config.allowUnfree = true;
