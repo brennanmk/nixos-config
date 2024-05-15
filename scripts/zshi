@@ -25,17 +25,8 @@ fi
     "builtin" "source" "--" "$ZDOTDIR/'$rc'"
   fi
 } always {
-  if [[ -o "no_rcs" ||
-        -o "login" && "'$rc'" == ".zlogin" ||
-        -o "no_login" && "'$rc'" == ".zshrc" ||
-        -o "no_login" && -o "no_interactive" && "'$rc'" == ".zshenv" ]]; then
-    "builtin" "unset" "_zshi_rcs" "_zshi_zdotdir"
-    "builtin" "command" "rm" "-rf" "--" '${(q)tmp}'
-    "builtin" "eval" '${(q)init}'
-  else
-    _zshi_zdotdir=${ZDOTDIR:-~}
-    ZDOTDIR='${(q)tmp}'
-  fi
+  _zshi_zdotdir=${ZDOTDIR:-~}
+  ZDOTDIR='${(q)tmp}'
 }' || return
     done
     _zshi_zdotdir=${ZDOTDIR:-~} ZDOTDIR=$tmp zsh "$@"

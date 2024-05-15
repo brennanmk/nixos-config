@@ -5,7 +5,6 @@
     file                              # Show file information 
     hexdump
     jdk17                             # java
-    libreoffice
     cinnamon.nemo-with-extensions     # file manager
     nitch                             # systhem fetch util
     nix-prefetch-github

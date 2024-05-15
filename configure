@@ -55,6 +55,19 @@ get_host() {
     confirm
 }
 
+configure_ros() {
+
+    echo -en "Would you like to create a ROS noetic workspace? [${GREEN}y${NORMAL}/${RED}n${NORMAL}]: "
+    read -n 1 -r
+    echo
+
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        mkdir -p ~/noetic_ws/src
+        cp shells/ros/flake.nix ~/noetic_ws/
+    fi
+}
+
+
 configure_desktop() {
     echo -e "\n${RED}START CONFIGURATION PHASE${NORMAL}\n"
     sleep 0.2
@@ -167,6 +180,8 @@ main() {
     elif [[ "$HOST" == "desktop" ]]; then
         configure_desktop
     fi
+
+    configure_ros
 }
 
 main && exit 0
