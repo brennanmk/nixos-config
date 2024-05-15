@@ -1,5 +1,8 @@
 { pkgs, username, ... }: 
 {
+  services.libinput.enable = true;
+  services.displayManager.defaultSession = "xfce+i3";
+
   services.xserver = {
     enable = true;
 
@@ -27,12 +30,8 @@
 
     displayManager = {
       gdm.enable = true;
-      defaultSession = "xfce+i3";
     };
 
-    libinput = {
-      enable = true;
-    };
   };
   # To prevent getting stuck at shutdown
   systemd.extraConfig = "DefaultTimeoutStopSec=10s";

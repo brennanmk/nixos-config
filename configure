@@ -36,18 +36,6 @@ print_header() {
     "
 }
 
-get_username() {
-    echo -en "Enter your$GREEN username$NORMAL : $YELLOW"
-    read username
-    echo -en "$NORMAL"
-    echo -en "Use$YELLOW "$username"$NORMAL as ${GREEN}username${NORMAL} ? "
-    confirm
-}
-
-set_username() {
-    sed -i -e "s/${CURRENT_USERNAME}/${username}/g" ./flake.nix
-}
-
 get_host() {
     echo -en "Choose a ${GREEN}host${NORMAL}, either [${YELLOW}D${NORMAL}]esktop or [${YELLOW}L${NORMAL}]aptop: "
     read -n 1 -r
@@ -67,27 +55,14 @@ get_host() {
     confirm
 }
 
-install_desktop() {
-    echo -e "\n${RED}START INSTALL PHASE${NORMAL}\n"
+configure_desktop() {
+    echo -e "\n${RED}START CONFIGURATION PHASE${NORMAL}\n"
     sleep 0.2
 
     # Create basic directories
     echo -e "Creating folders:"
-    echo -e "    - ${MAGENTA}~/Music${NORMAL}"
-    echo -e "    - ${MAGENTA}~/Documents${NORMAL}"
-    echo -e "    - ${MAGENTA}~/Pictures/wallpapers/others${NORMAL}"
-    mkdir -p ~/Music
-    mkdir -p ~/Documents
-    mkdir -p ~/Pictures/wallpapers/others
-    sleep 0.2
-
-    echo -e "Copying ${MAGENTA}i3 config${NORMAL}"
-    mkdir ~/.config/i3
-    cp configs/desktop/i3 ~/.config/i3/config
-    sleep 0.2
-
-    echo -e "Copying ${MAGENTA}wallpapers${NORMAL}"
-    cp -r wallpapers/desktop/ ~/Pictures/wallpapers/
+    mkdir -p ~/.local/bin
+    mkdir -p ~/.config/i3
     sleep 0.2
 
     echo -e "Installing ${MAGENTA}polybar${NORMAL}"
@@ -109,7 +84,6 @@ install_desktop() {
     sleep 0.2
 
     echo -e "Copying ${MAGENTA}scripts${NORMAL}"
-    mkdir ~/.local/bin
     cp scripts/* ~/.local/bin
     sleep 0.2
 
@@ -122,32 +96,19 @@ install_desktop() {
     ~/.config/emacs/bin/doom install
     rm -rf ~/emacs.d
 
-    # Get the hardware configuration
-    echo -e "Copying ${MAGENTA}/etc/nixos/hardware-configuration.nix${NORMAL} to ${MAGENTA}./hosts/${HOST}/${NORMAL}\n"
-    cp /etc/nixos/hardware-configuration.nix hosts/${HOST}/hardware-configuration.nix
-    sleep 0.2
-
-    # Last Confirmation
-    echo -en "You are about to start the system build, do you want to process ? "
+    echo -en "Configuration Complete... Would you like to reboot now "
     confirm
-
-    # Build the system (flakes + home manager)
-    echo -e "\nBuilding the system...\n"
-    sudo nixos-rebuild switch --flake .#${HOST}
+    sudo reboot now
 }
 
-install_laptop() {
-    echo -e "\n${RED}START INSTALL PHASE${NORMAL}\n"
+configure_laptop() {
+    echo -e "\n${RED}START CONFIGURATION PHASE${NORMAL}\n"
     sleep 0.2
 
     # Create basic directories
     echo -e "Creating folders:"
-    echo -e "    - ${MAGENTA}~/Music${NORMAL}"
-    echo -e "    - ${MAGENTA}~/Documents${NORMAL}"
-    echo -e "    - ${MAGENTA}~/Pictures/wallpapers/others${NORMAL}"
-    mkdir -p ~/Music
-    mkdir -p ~/Documents
-    mkdir -p ~/Pictures/wallpapers/others
+    mkdir -p ~/.local/bin
+    mkdir -p ~/.config/i3
     sleep 0.2
 
     echo -e "Copying ${MAGENTA}i3 config${NORMAL}"
@@ -155,14 +116,11 @@ install_laptop() {
     cp configs/laptop/i3 ~/.config/i3/config
     sleep 0.2
 
-    echo -e "Copying ${MAGENTA}wallpapers${NORMAL}"
-    cp -r wallpapers/laptop/ ~/Pictures/wallpapers/
-    sleep 0.2
-
     echo -e "Installing ${MAGENTA}polybar${NORMAL}"
     git clone --depth=1 https://github.com/adi1090x/polybar-themes.git ~/Downloads/polybar-themes
     chmod +x ~/Downloads/setup.sh
     ~/Downloads/polybar-themes/setup.sh
+    cd ~/Downloads/polybar-themes
 
     echo -e "Copying ${MAGENTA}polybar config${NORMAL}"
     rm ~/.config/polybar/hack/config.ini
@@ -191,33 +149,23 @@ install_laptop() {
     ~/.config/emacs/bin/doom install
     rm -rf ~/emacs.d
 
-    # Get the hardware configuration
-    echo -e "Copying ${MAGENTA}/etc/nixos/hardware-configuration.nix${NORMAL} to ${MAGENTA}./hosts/${HOST}/${NORMAL}\n"
-    cp /etc/nixos/hardware-configuration.nix hosts/${HOST}/hardware-configuration.nix
-    sleep 0.2
-
-    # Last Confirmation
-    echo -en "You are about to start the system build, do you want to process ? "
+    echo -en "Configuration Complete... Would you like to reboot now "
     confirm
-
-    # Build the system (flakes + home manager)
-    echo -e "\nBuilding the system...\n"
-    sudo nixos-rebuild switch --flake .#${HOST}
+    sudo reboot now
 }
+
 
 main() {
     init
 
     print_header
 
-    get_username
-    set_username
     get_host
-
+    
     if [[ "$HOST" == "laptop" ]]; then
-       install_laptop
-    elif [host == 'desktop']; then
-        install_desktop
+       configure_laptop
+    elif [[ "$HOST" == "desktop" ]]; then
+        configure_desktop
     fi
 }
 

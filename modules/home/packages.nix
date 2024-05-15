@@ -28,10 +28,12 @@
     discord
     polybar
     obsidian
+    htop
+    cudatoolkit
+    obs-studio
 
     #xfce
     xfce.xfce4-pulseaudio-plugin
-    xfce.xfce4-panel
     pulseaudio
     blueberry
 
