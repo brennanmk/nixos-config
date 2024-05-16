@@ -11,6 +11,5 @@
     ++ [ (import ./services.nix) ]
     ++ [ (import ./system.nix) ]
     ++ [ (import ./user.nix) ]
-    ++ [ (import ./nvidia.nix) ]
     ++ [ (import ./virtualization.nix) ];
 }

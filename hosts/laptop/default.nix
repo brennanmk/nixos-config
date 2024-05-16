@@ -2,6 +2,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./nvidia.nix
     ./../../modules/core
   ];
 
@@ -13,8 +14,7 @@
   ];
   
   services = {    
-    # thermald.enable = true;
-    # cpupower-gui.enable = true;
+    thermald.enable = true;
     power-profiles-daemon.enable = true;
  
     upower = {
