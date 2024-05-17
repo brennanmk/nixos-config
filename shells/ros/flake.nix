@@ -14,6 +14,7 @@
             numpy
             ray
             pandas
+            opencv4
         ]);
       in {
         devShells.default = pkgs.mkShell {
@@ -22,16 +23,14 @@
             rospy
             catkin
             ros-core
+            roslaunch
             rosbash
+            cv-bridge
             common-msgs
             rviz
             pythonPackages
           ];
 
-        shellHook =
-          ''
-            zshi "alias rsrc='source ~/noetic_ws/devel/setup.zsh'; source ~/noetic_ws/devel/setup.zsh"
-          '';
         };
       });
 }

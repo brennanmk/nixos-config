@@ -33,7 +33,6 @@ bindsym $mod+Return exec kitty
 # kill focused window
 bindsym $mod+q kill
 
-
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
@@ -154,6 +153,5 @@ for_window [window_role="toolbox"] floating enable
 for_window [window_role="webconsole"] floating enable
 for_window [window_type="dialog"] floating enable
 for_window [window_type="menu"] floating enable
-
-# Custom floating windows
+for_window [class="^.*"] border pixel 0
 for_window [title="Enpass Assistant"] floating enable

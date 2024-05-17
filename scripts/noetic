@@ -1,0 +1,3 @@
+dir=$(pwd)
+cd ~/noetic_ws/
+nix develop --command zsh -c "cd $dir; zsh -i;"
