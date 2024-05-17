@@ -71,14 +71,6 @@ install_desktop() {
     echo -e "\n${RED}START INSTALL PHASE${NORMAL}\n"
     sleep 0.2
 
-    # Create basic directories
-    echo -e "Creating folders:"
-    echo -e "    - ${MAGENTA}~/Music${NORMAL}"
-    echo -e "    - ${MAGENTA}~/Documents${NORMAL}"
-    mkdir -p ~/Music
-    mkdir -p ~/Documents
-    sleep 0.2
-
     echo -e "Copying ${MAGENTA}wallpapers${NORMAL}"
     cp -r wallpapers/desktop/* ~/Pictures/wallpapers/
     sleep 0.2
