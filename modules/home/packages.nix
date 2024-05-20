@@ -30,6 +30,8 @@
     htop
     cudatoolkit
     obs-studio
+    zerotierone
+    bitwarden
 
     #xfce
     xfce.xfce4-pulseaudio-plugin

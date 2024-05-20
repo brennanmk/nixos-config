@@ -3,6 +3,7 @@
 init() {
     # Vars
     CURRENT_USERNAME='brennan'
+    DIR="$(pwd)"
 
     # Colors
     NORMAL=$(tput sgr0)
@@ -69,6 +70,7 @@ configure_ros() {
 
 
 configure_desktop() {
+
     echo -e "\n${RED}START CONFIGURATION PHASE${NORMAL}\n"
     sleep 0.2
 
@@ -80,8 +82,8 @@ configure_desktop() {
 
     echo -e "Installing ${MAGENTA}polybar${NORMAL}"
     git clone --depth=1 https://github.com/adi1090x/polybar-themes.git ~/Downloads/polybar-themes
-    chmod +x ~/Downloads/setup.sh
-    ~/Downloads/polybar-themes/setup.sh
+    cd ~/Downloads/polybar-themes && chmod +x setup.sh && ./setup.sh
+    cd $DIR
 
     echo -e "Copying ${MAGENTA}polybar config${NORMAL}"
     rm ~/.config/polybar/hack/config.ini
@@ -105,7 +107,7 @@ configure_desktop() {
     sleep 0.2
 
     echo -e "Copying ${MAGENTA}Xresouces config${NORMAL}"
-    cp configs/laptop/Xresources ~/.Xresources
+    cp configs/desktop/Xresources ~/.Xresources
     sleep 0.2
 
     echo -e "Installing ${MAGENTA}doom${NORMAL}"
@@ -138,9 +140,8 @@ configure_laptop() {
 
     echo -e "Installing ${MAGENTA}polybar${NORMAL}"
     git clone --depth=1 https://github.com/adi1090x/polybar-themes.git ~/Downloads/polybar-themes
-    chmod +x ~/Downloads/setup.sh
-    ~/Downloads/polybar-themes/setup.sh
-    cd ~/Downloads/polybar-themes
+    cd ~/Downloads/polybar-themes && chmod +x setup.sh && ./setup.sh
+    cd $DIR
 
     echo -e "Copying ${MAGENTA}polybar config${NORMAL}"
     rm ~/.config/polybar/hack/config.ini
