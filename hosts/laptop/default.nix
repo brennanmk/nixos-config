@@ -11,6 +11,8 @@
     brightnessctl
     cpupower-gui
     powertop
+    libinput
+    libinput-gestures
   ];
   
   services = {    

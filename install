@@ -88,10 +88,6 @@ install_desktop() {
     cp /etc/nixos/hardware-configuration.nix hosts/${HOST}/hardware-configuration.nix
     sleep 0.2
 
-    echo -e "Copying ${MAGENTA}i3 config${NORMAL}"
-    cp configs/desktop/i3 ~/.config/i3/config
-    sleep 0.2
-
     # Build the system (flakes + home manager)
     echo -e "\nBuilding the system...\n"
     sudo nixos-rebuild switch --flake .#${HOST}
