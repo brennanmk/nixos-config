@@ -17,9 +17,6 @@ set $mod Mod4
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-bindsym XF86AudioRaiseVolume exec pactl -- set-sink-volume 0 +2.5%
-bindsym XF86AudioLowerVolume exec pactl -- set-sink-volume 0 -2.5%
-bindsym XF86AudioPlay exec playerctl play-pause
 
 #resize
 bindsym $mod+Ctrl+Right resize shrink width 1 px or 1 ppt

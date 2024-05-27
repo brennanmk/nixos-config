@@ -32,10 +32,11 @@
     obs-studio
     zerotierone
     bitwarden
+    unityhub
+    zoom-us
 
     #xfce
     xfce.xfce4-pulseaudio-plugin
-    pulseaudio
     blueberry
 
     python312
@@ -51,7 +52,6 @@
     ncdu                              # disk space
     openssl
     pamixer                           # pulseaudio command line mixer
-    pavucontrol                       # pulseaudio volume controle (GUI)
     playerctl                         # controller for media players
     unzip
     wget

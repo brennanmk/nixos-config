@@ -6,5 +6,6 @@
     ++ [(import ./packages.nix)]                  # other packages
     ++ [(import ./zsh.nix)]
     ++ [(import ./rofi.nix)]
-    ++ [(import ./vscodium.nix)];
+    ++ [(import ./vscodium.nix)]
+    ++ [(import ./librewolf.nix)];
 }

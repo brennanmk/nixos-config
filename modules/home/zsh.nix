@@ -14,6 +14,7 @@
     '';
     shellAliases = {
       # Nixos
+      mirror = "xrandr --output HDMI-0 --auto --scale-from 2560x1600 --same-as DP-4";
       nix-shell = "nix-shell --run zsh";
       nix-switch = "sudo nixos-rebuild switch --flake ~/nixos-config#${host}";
       nix-switchu = "sudo nixos-rebuild switch --upgrade --flake ~/nixos-config#${host}";

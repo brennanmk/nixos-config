@@ -6,6 +6,7 @@
     ./../../modules/core
   ];
 
+  hardware.enableAllFirmware  = true;
   environment.systemPackages = with pkgs; [
     acpi
     brightnessctl

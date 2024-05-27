@@ -91,11 +91,13 @@ configure_desktop() {
     rm ~/.config/polybar/hack/modules.ini
     rm ~/.config/polybar/hack/user_modules.ini
     rm ~/.config/polybar/hack/scripts/rofi/colors.rasi
+    rm ~/.config/polybar/hack/launch.sh
     cp configs/desktop/polybar/config.ini ~/.config/polybar/hack/config.ini
     cp configs/desktop/polybar/colors.ini ~/.config/polybar/hack/colors.ini
     cp configs/desktop/polybar/modules.ini ~/.config/polybar/hack/modules.ini
     cp configs/desktop/polybar/user_modules.ini ~/.config/polybar/hack/user_modules.ini
     cp configs/desktop/polybar/colors.rasi ~/.config/polybar/hack/scripts/rofi/colors.rasi
+    cp configs/desktop/polybar/launch.sh ~/.config/polybar/hack/launch.sh
     sleep 0.2
 
     echo -e "Copying ${MAGENTA}scripts${NORMAL}"
@@ -149,11 +151,13 @@ configure_laptop() {
     rm ~/.config/polybar/hack/modules.ini
     rm ~/.config/polybar/hack/user_modules.ini
     rm ~/.config/polybar/hack/scripts/rofi/colors.rasi
+    rm ~/.config/polybar/hack/launch.sh
     cp configs/laptop/polybar/config.ini ~/.config/polybar/hack/config.ini
     cp configs/laptop/polybar/colors.ini ~/.config/polybar/hack/colors.ini
     cp configs/laptop/polybar/modules.ini ~/.config/polybar/hack/modules.ini
     cp configs/laptop/polybar/user_modules.ini ~/.config/polybar/hack/user_modules.ini
     cp configs/laptop/polybar/colors.rasi ~/.config/polybar/hack/scripts/rofi/colors.rasi
+    cp configs/laptop/polybar/launch.sh ~/.config/polybar/hack/launch.sh
     sleep 0.2
 
     echo -e "Copying ${MAGENTA}scripts${NORMAL}"
