@@ -1,4 +1,4 @@
 {inputs, username, host, ...}: {
   imports =
-       [(import ./default.nix)]
+       [(import ./default.nix)];
 }

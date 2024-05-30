@@ -34,6 +34,7 @@
     bitwarden
     unityhub
     zoom-us
+    sqlite
 
     #xfce
     xfce.xfce4-pulseaudio-plugin

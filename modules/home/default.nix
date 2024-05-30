@@ -7,6 +7,5 @@
     ++ [(import ./zsh.nix)]
     ++ [(import ./rofi.nix)]
     ++ [(import ./vscodium.nix)]
-    ++ [(import ./librewolf.nix)]
     ++ [(import ./aspell.nix)];
 }
