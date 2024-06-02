@@ -71,10 +71,6 @@ install_desktop() {
     echo -e "\n${RED}START INSTALL PHASE${NORMAL}\n"
     sleep 0.2
 
-    echo -e "Copying ${MAGENTA}wallpapers${NORMAL}"
-    cp -r wallpapers/desktop/* ~/Pictures/wallpapers/
-    sleep 0.2
-
     # Get the hardware configuration
     echo -e "Copying ${MAGENTA}/etc/nixos/hardware-configuration.nix${NORMAL} to ${MAGENTA}./hosts/${HOST}/${NORMAL}\n"
     cp /etc/nixos/hardware-configuration.nix hosts/${HOST}/hardware-configuration.nix

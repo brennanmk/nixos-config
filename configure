@@ -78,6 +78,11 @@ configure_desktop() {
     echo -e "Creating folders:"
     mkdir -p ~/.local/bin
     mkdir -p ~/.config/i3
+    mkdir -p ~/Pictures/wallpapers
+    sleep 0.2
+
+    echo -e "Copying ${MAGENTA}wallpapers${NORMAL}"
+    cp -r wallpapers/desktop/* ~/Pictures/wallpapers/
     sleep 0.2
 
     echo -e "Installing ${MAGENTA}polybar${NORMAL}"
@@ -133,6 +138,11 @@ configure_laptop() {
     echo -e "Creating folders:"
     mkdir -p ~/.local/bin
     mkdir -p ~/.config/i3
+    mkdir -p ~/Pictures/wallpapers
+    sleep 0.2
+
+    echo -e "Copying ${MAGENTA}wallpapers${NORMAL}"
+    cp -r wallpapers/desktop/* ~/Pictures/wallpapers/
     sleep 0.2
 
     echo -e "Copying ${MAGENTA}i3 config${NORMAL}"
