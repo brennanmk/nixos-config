@@ -80,9 +80,6 @@ install_desktop() {
     echo -e "\nBuilding the system...\n"
     sudo nixos-rebuild switch --flake .#${HOST}
 
-    echo -e "\nBuilding again for good measure...\n"
-    sudo nixos-rebuild switch --flake .#${HOST}
-
     echo -en "Would you like to reboot now "
     confirm
     sudo reboot now

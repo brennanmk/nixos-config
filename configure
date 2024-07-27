@@ -85,6 +85,11 @@ configure_desktop() {
     cp -r wallpapers/desktop/* ~/Pictures/wallpapers/
     sleep 0.2
 
+    echo -e "Copying ${MAGENTA}i3 config${NORMAL}"
+    mkdir ~/.config/i3
+    cp configs/laptop/i3 ~/.config/i3/config
+    sleep 0.2
+
     echo -e "Installing ${MAGENTA}polybar${NORMAL}"
     git clone --depth=1 https://github.com/adi1090x/polybar-themes.git ~/Downloads/polybar-themes
     cd ~/Downloads/polybar-themes && chmod +x setup.sh && ./setup.sh
