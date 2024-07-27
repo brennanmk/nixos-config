@@ -12,6 +12,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    catppuccin-starship = {
+      url = "github:catppuccin/starship";
+      flake = false;
+    };
   };
 
   outputs = { nixpkgs, self, ...} @ inputs:

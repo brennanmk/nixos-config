@@ -13,6 +13,7 @@
     valgrind                          # c memory analyzer
     yazi                              # terminal file manager
     gnome.zenity
+
     # C / C++
     gcc
     gnumake
@@ -28,13 +29,18 @@
     polybar
     obsidian
     htop
-    cudatoolkit
+    cudaPackaages_12_5.cudatoolkit
     obs-studio
     zerotierone
     bitwarden
     unityhub
     zoom-us
     sqlite
+    nodejs
+
+    #image writing
+    caligula
+    rpi-imager
 
     #xfce
     xfce.xfce4-pulseaudio-plugin

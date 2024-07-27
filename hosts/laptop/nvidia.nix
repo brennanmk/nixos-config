@@ -4,15 +4,10 @@
     boot.kernelModules = [ "amdgpu" ];
 
     services.xserver.videoDrivers = ["nvidia"];
-    services.power-profiles-daemon.enable = lib.mkDefault true;
 
     hardware = {
-        opengl = {
-            enable = true;
-            driSupport = true;
-        };
-
         nvidia = {
+            package = config.boot.kernelPackages.nvidiaPackages.beta;
             modesetting.enable = lib.mkDefault true;
             powerManagement.enable = lib.mkDefault true;
             open = lib.mkDefault false;

@@ -14,12 +14,13 @@
     powertop
     libinput
     libinput-gestures
+    devenv
+    direnv
   ];
   
   services = {    
     thermald.enable = true;
-    power-profiles-daemon.enable = true;
- 
+
     upower = {
       enable = true;
       percentageLow = 20;
