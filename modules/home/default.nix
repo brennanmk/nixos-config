@@ -1,6 +1,6 @@
 {inputs, username, host, ...}: {
   imports =
-    [(import ./git.nix)]                      
+    [(import ./git.nix)]      
     ++ [(import ./gtk.nix)]                       # gtk theme
     ++ [(import ./kitty.nix)]                     # terminal
     ++ [(import ./packages.nix)]                  # other packages
@@ -8,5 +8,11 @@
     ++ [(import ./rofi.nix)]
     ++ [(import ./vscodium.nix)]
     ++ [(import ./aspell.nix)]
-    ++ [(import ./starship.nix)];
+    ++ [(import ./hyprland)]                       # window manager    
+    ++ [(import ./swaync/swaync.nix)]             # notification deamon
+    ++ [(import ./scripts/scripts.nix)]           # personal scripts
+    ++ [(import ./starship.nix)]
+    ++ [(import ./fuzzel.nix)]                  
+    ++ [(import ./waybar)];                        # status bar
+
 }

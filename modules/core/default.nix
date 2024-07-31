@@ -11,5 +11,6 @@
     ++ [ (import ./services.nix) ]
     ++ [ (import ./system.nix) ]
     ++ [ (import ./user.nix) ]
+    ++ [ (import ./wayland.nix) ]
     ++ [ (import ./virtualization.nix) ];
 }
