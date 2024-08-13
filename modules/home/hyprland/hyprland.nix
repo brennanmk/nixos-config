@@ -7,15 +7,17 @@
     hyprpicker
     grim
     slurp
+    wl-clipboard
     wl-clip-persist
     wf-recorder
     glib
     wayland
+    xdg-utils
   ];
+
   systemd.user.targets.hyprland-session.Unit.Wants = [ "xdg-desktop-autostart.target" ];
   wayland.windowManager.hyprland = {
     enable = true;
-    plugins = [ inputs.hy3.packages.x86_64-linux.hy3 ];
     xwayland = {
       enable = true;
       # hidpi = true;

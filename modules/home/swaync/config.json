@@ -40,22 +40,23 @@
       "button-text": " Clear All "
     },
     "menubar#desktop": {
-      "menu#powermode-buttons": {
-        "label": " 󰌪 ",
+      "menu#bluetooth": {
+        "label": "  ",
         "position": "left",
         "actions": [
           {
-            "label": "Performance",
-            "command": "powerprofilesctl set performance"
+            "label": "   Wifi",
+            "command": "kitty --class floating -e nmtui"
           },
           {
-            "label": "Balanced",
-            "command": "powerprofilesctl set balanced"
+            "label": "󰂰  Blueooth",
+            "command": "kitty --class floating -e bluetuith"
           },
           {
-            "label": "Power-saver",
-            "command": "powerprofilesctl set power-saver"
+            "label": " 󱋆  Display Settings",
+            "command": "wdisplays"
           }
+
         ]
       },
       "menu#screenshot": {
@@ -100,7 +101,8 @@
         "actions": [
           {
             "label": "  Lock",
-            "command": "swaylock"
+            "command": "hyprctl dispatch exit"
+
           },
           {
             "label": "  Reboot",

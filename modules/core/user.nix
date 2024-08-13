@@ -20,7 +20,7 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "${username}";
-    extraGroups = [ "networkmanager" "wheel" "docker" "input" "dialout"];
+    extraGroups = [ "networkmanager" "wheel" "docker" "input" "dialout" "openrazer"];
     shell = pkgs.zsh;
   };
   nix.settings.allowed-users = [ "${username}" ];

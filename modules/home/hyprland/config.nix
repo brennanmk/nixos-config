@@ -9,13 +9,16 @@
         "hash dbus-update-activation-environment 2>/dev/null &"
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP &"
         "nm-applet &"
-        "wl-clip-persist --clipboard both"
         "hyprctl setcursor Nordzy-cursors 22 &"
         "poweralertd &"
         "waybar &"
         "swaync &"
-        "wl-paste --watch cliphist store &"
-        "hyprlock"
+        "swaybg -m fill -o DP-3 -i Pictures/wallpapers/wallpaper.png &"
+        "swaybg -m fill -o DP-2 -i Pictures/wallpapers/verticle.jpg &"
+        "swaybg -m fill -o HDMI-A-1 -i Pictures/wallpapers/verticle.jpg &"
+        "swayidle -w timeout 900 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' &"
+        "emacs --daemon &"
+        "sway-audio-idle-inhibit &"
       ];
 
       input = {
@@ -31,7 +34,7 @@
 
       general = {
         "$mainMod" = "SUPER";
-        layout = "hy3";
+        layout = "dwindle";
         gaps_in = 0;
         gaps_out = 0;
         border_size = 2;
@@ -132,7 +135,7 @@
         "$mainMod, Return, exec, kitty"
         "ALT, Return, exec, kitty --title float_kitty"
         "$mainMod SHIFT, Return, exec, kitty --start-as=fullscreen -o 'font_size=16'"
-        "$mainMod, Q, hy3:killactive,"
+        "$mainMod, Q, killactive,"
         "$mainMod, F, fullscreen, 0"
         "$mainMod SHIFT, F, fullscreen, 1"
         "$mainMod, Space, togglefloating,"
@@ -148,14 +151,11 @@
         ",Print, exec, grimblast --notify --cursor --freeze copy area"
 
         # switch focus
-        "$mainMod, left, hy3:movefocus, l, warp"
-        "$mainMod, right, hy3:movefocus, r, warp"
-        "$mainMod, up, hy3:movefocus, u, warp"
-        "$mainMod, down, hy3:movefocus, d, warp"
+        "$mainMod, left, movefocus, l"
+        "$mainMod, right, movefocus, r"
+        "$mainMod, up, movefocus, u"
+        "$mainMod, down, movefocus, d"
 
-
-        "$mainMod, V, hy3:makegroup, v"
-        "$mainMod, H, hy3:makegroup, h"
 
         # switch workspace
         "$mainMod, 1, workspace, 1"
@@ -170,22 +170,22 @@
         "$mainMod, 0, workspace, 10"
 
         # same as above, but switch to the workspace
-        "$mainMod SHIFT, 1, hy3:movetoworkspace, 1" # movetoworkspacesilent
-        "$mainMod SHIFT, 2, hy3:movetoworkspace, 2"
-        "$mainMod SHIFT, 3, hy3:movetoworkspace, 3"
-        "$mainMod SHIFT, 4, hy3:movetoworkspace, 4"
-        "$mainMod SHIFT, 5, hy3:movetoworkspace, 5"
-        "$mainMod SHIFT, 6, hy3:movetoworkspace, 6"
-        "$mainMod SHIFT, 7, hy3:movetoworkspace, 7"
-        "$mainMod SHIFT, 8, hy3:movetoworkspace, 8"
-        "$mainMod SHIFT, 9, hy3:movetoworkspace, 9"
-        "$mainMod SHIFT, 0, hy3:movetoworkspace, 10"
+        "$mainMod SHIFT, 1, movetoworkspace, 1" # movetoworkspacesilent
+        "$mainMod SHIFT, 2, movetoworkspace, 2"
+        "$mainMod SHIFT, 3, movetoworkspace, 3"
+        "$mainMod SHIFT, 4, movetoworkspace, 4"
+        "$mainMod SHIFT, 5, movetoworkspace, 5"
+        "$mainMod SHIFT, 6, movetoworkspace, 6"
+        "$mainMod SHIFT, 7, movetoworkspace, 7"
+        "$mainMod SHIFT, 8, movetoworkspace, 8"
+        "$mainMod SHIFT, 9, movetoworkspace, 9"
+        "$mainMod SHIFT, 0, movetoworkspace, 10"
 
         # window control
-        "$mainMod SHIFT, left, hy3:movewindow, l"
-        "$mainMod SHIFT, right, hy3:movewindow, r"
-        "$mainMod SHIFT, up, hy3:movewindow, u"
-        "$mainMod SHIFT, down, hy3:movewindow, d"
+        "$mainMod SHIFT, left, movewindow, l"
+        "$mainMod SHIFT, right, movewindow, r"
+        "$mainMod SHIFT, up, movewindow, u"
+        "$mainMod SHIFT, down, movewindow, d"
         "$mainMod CTRL, left, resizeactive, -80 0"
         "$mainMod CTRL, right, resizeactive, 80 0"
         "$mainMod CTRL, up, resizeactive, 0 -80"
@@ -274,8 +274,11 @@
         "float,class:^(confirmreset)$"
         "float,title:^(Open File)$"
         "float,title:^(branchdialog)$"
+        "float,title:^(wdisplays)$"
         "float,title:^(Confirm to replace files)$"
         "float,title:^(File Operation Progress)$"
+        "float,class:floating"
+        "size 850 500,class:floating"
 
         "opacity 0.0 override,class:^(xwaylandvideobridge)$"
         "noanim,class:^(xwaylandvideobridge)$"
@@ -287,7 +290,7 @@
     };
 
     extraConfig = "
-      monitor=HDMI-A-1,1920x1080,-0x0,1,transform,1
+      monitor=HDMI-A-1,1920x1080,0x0,1,transform,1
       monitor=DP-3,3440x1440@165.00,1080x0,1
       monitor=DP-2,1920x1080,4520x0,1,transform,3
 

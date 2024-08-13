@@ -13,19 +13,22 @@
     valgrind                          # c memory analyzer
     yazi                              # terminal file manager
     gnome.zenity
+    polychromatic
 
     # C / C++
     gcc
     gnumake
+
+    # general appliactions
     firefox
     enpass
     slack
-    emacs29
+    emacs29-pgtk
     spotify
     feh
     evince
     zotero
-    webcord
+    vesktop
     polybar
     obsidian
     htop
@@ -36,17 +39,27 @@
     unityhub
     sqlite
     nodejs
+    prusa-slicer
 
     #image writing
     caligula
     rpi-imager
+    texlive.combined.scheme-full
+    swayidle
+    sway-audio-idle-inhibit
 
-    #xfce
-    blueberry
+    #system utils
+    bluetuith
     pulsemixer
     pavucontrol
+    wdisplays
 
-    python312
+    python3
+    python3Packages.black
+    python3Packages.python-lsp-server
+    python3Packages.pyflakes
+    python3Packages.mysqlclient
+
     zlib
     psmisc
     cmatrix
@@ -62,7 +75,6 @@
     playerctl                         # controller for media players
     unzip
     wget
-    xdg-utils
     inputs.alejandra.defaultPackage.${system}
   ]);
 }

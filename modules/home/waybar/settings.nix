@@ -10,6 +10,7 @@
     margin-left= 0;
     margin-right= 0;
     modules-left= [
+        "hyprland/window"
     ];
     modules-center= [
         "clock"
@@ -30,30 +31,6 @@
         tooltip= "true";
         tooltip-format= "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
         format-alt= " {:%d/%m}";
-    };
-    "hyprland/workspaces"= {
-        active-only= false;
-        disable-scroll= true;
-        format = "{icon}";
-        on-click= "activate";
-        format-icons= {
-            "1"= "󰈹";
-            "2"= "";
-            "3"= "󰘙";
-            "4"= "󰙯";
-            "5"= "";
-            "6"= "";
-            urgent= "";
-            default = "";
-            sort-by-number= true;
-        };
-        persistent-workspaces = {
-            "1"= [];
-            "2"= [];
-            "3"= [];
-            "4"= [];
-            "5"= [];
-        };
     };
     memory= {
         format= "󰟜 {}%";
@@ -88,7 +65,7 @@
             default= [" "];
         };
         scroll-step= 5;
-        on-click= "pamixer -t";
+        on-click="kitty --class floating -e pulsemixer";
     };
     battery = {
         format = "{icon} {capacity}%";

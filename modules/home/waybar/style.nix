@@ -6,7 +6,7 @@ let custom = {
     text_color = "#cdd6f4";
     secondary_accent= "89b4fa";
     tertiary_accent = "f5f5f5";
-    background = "11111B";
+    background = "11111";
     opacity = "0.98";
 };
 in 
@@ -25,7 +25,7 @@ in
     }
 
     window#waybar {
-        background: none;
+        background: #282a36;
     }
 
     #workspaces {
