@@ -28,5 +28,7 @@
     NVD_BACKEND="direct";
     CLUTTER_BACKEND = "wayland";
     GTK_THEME = "Dracula";
+    HYPRCURSOR_SIZE="28";
+    HYPRCURSOR_THEME="rose-pine-hyprcursor";
   };
 }

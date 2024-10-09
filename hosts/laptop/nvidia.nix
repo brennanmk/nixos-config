@@ -1,7 +1,12 @@
 { pkgs, config, lib, ... }:
 
+let
+  driverPkg = config.boot.kernelPackages.nvidiaPackages.beta;
+in
 {
+    services.xserver.videoDrivers = ["nvidia"];
     boot.kernelModules = [ "amdgpu" ];
+    boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
     hardware = {
         nvidia = {
             package = config.boot.kernelPackages.nvidiaPackages.beta;
@@ -13,6 +18,10 @@
                 amdgpuBusId = lib.mkDefault "PCI:34:0:0";
                 nvidiaBusId = "PCI:1:0:0";
             };
+        };
+        opengl = {
+               enable = true;
+               package = driverPkg;
         };
     };
 

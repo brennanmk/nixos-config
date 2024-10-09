@@ -13,12 +13,11 @@
         "poweralertd &"
         "waybar &"
         "swaync &"
-        "swaybg -m fill -o DP-3 -i Pictures/wallpapers/wallpaper.png &"
-        "swaybg -m fill -o DP-2 -i Pictures/wallpapers/verticle.jpg &"
-        "swaybg -m fill -o HDMI-A-1 -i Pictures/wallpapers/verticle.jpg &"
-        "swayidle -w timeout 900 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' &"
+        "swaybg -m fill -i Pictures/wallpapers/wallpaper.png &"
         "emacs --daemon &"
+        "libinput-gestures &"
         "sway-audio-idle-inhibit &"
+        "swayidle -w timeout 900 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' &"
       ];
 
       input = {
@@ -34,7 +33,7 @@
 
       general = {
         "$mainMod" = "SUPER";
-        layout = "dwindle";
+        layout = "master";
         gaps_in = 0;
         gaps_out = 0;
         border_size = 2;
@@ -212,6 +211,8 @@
         "$mainMod, XF86MonBrightnessUp, exec, brightnessctl set 100%+"
         "$mainMod, XF86MonBrightnessDown, exec, brightnessctl set 100%-"
 
+        "$mainMod, M, exec, hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1'"
+        "$mainMod SHIFT, M, exec, hyprctl keyword monitor 'eDP-1, disable'"
       ];
 
       # mouse binding
@@ -219,6 +220,11 @@
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
       ];
+
+      #bindl = [
+      #      ",switch:off:Lid Switch,exec,``hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1.25'"
+      #      ",switch:on:Lid Switch,exec,hyprctl keyword monitor 'eDP-1, disable'"
+      #];
 
       # windowrule
       windowrule = [
@@ -290,18 +296,8 @@
     };
 
     extraConfig = "
-      monitor=HDMI-A-1,1920x1080,0x0,1,transform,1
-      monitor=DP-3,3440x1440@165.00,1080x0,1
-      monitor=DP-2,1920x1080,4520x0,1,transform,3
+      monitor=,highres,auto,1
 
-
-      workspace = 1, monitor:HDMI-A-1, default:true
-      workspace = 2, monitor:DP-3, default:true
-      workspace = 3, monitor:DP-2, default:true
-
-      xwayland {
-        force_zero_scaling = true
-      }
     ";
   };
 }

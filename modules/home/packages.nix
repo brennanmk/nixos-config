@@ -60,6 +60,14 @@
     python3Packages.pyflakes
     python3Packages.mysqlclient
 
+    # Cursor fix
+    rose-pine-cursor
+    inputs.rose-pine-hyprcursor.packages.${system}.default
+    nwg-look
+
+    rclone
+    btop
+
     zlib
     psmisc
     cmatrix

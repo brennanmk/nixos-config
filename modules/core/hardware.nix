@@ -1,8 +1,8 @@
 { pkgs, ... }:
 {  
   hardware.enableRedistributableFirmware = true;
-  hardware.openrazer.enable = true;
-  environment.systemPackages = with pkgs; [
-      openrazer-daemon
-   ];
+
+ hardware.bluetooth.enable = true; # enables support for Bluetooth
+ hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+
 }

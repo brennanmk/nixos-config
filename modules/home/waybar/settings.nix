@@ -2,7 +2,6 @@
 {
   programs.waybar.settings.mainBar = {
     position= "top";
-    output= "DP-3";
     layer= "top";
     height= 5;
     margin-top= 0;
@@ -16,11 +15,9 @@
         "clock"
     ];
     modules-right= [
-        "cpu"
-        "memory"
-        "disk"
-        "pulseaudio" 
         "network"
+        "pulseaudio"
+        "battery"
         "custom/notification"
     ];
     clock= {
@@ -48,11 +45,11 @@
         interval= 60;
     };
     network = {
-        format-wifi = "  {signalStrength}%";
-        format-ethernet = "󰀂 ";
+        format-wifi = "";
+        format-ethernet = "󰀂";
         tooltip-format = "Connected to {essid} {ifname} via {gwaddr}";
         format-linked = "{ifname} (No IP)";
-        format-disconnected = "󰖪 ";
+        format-disconnected = "󰖪";
     };
     tray= {
         icon-size= 20;
@@ -68,11 +65,11 @@
         on-click="kitty --class floating -e pulsemixer";
     };
     battery = {
-        format = "{icon} {capacity}%";
+        format = "{icon} {capacity}% ";
         format-icons = [" " " " " " " " " "];
-        format-charging = " {capacity}%";
-        format-full = " {capacity}%";
-        format-warning = " {capacity}%";
+        format-charging = " {capacity}% ";
+        format-full = " {capacity}% ";
+        format-warning = " {capacity}% ";
         interval = 5;
         states = {
             warning = 20;
@@ -86,14 +83,14 @@
         tooltip = false;
         format = "{icon} ";
         format-icons = {
-            notification = "<span foreground='red'><sup></sup></span>   ";
-            none = "   ";
-            dnd-notification = "<span foreground='red'><sup></sup></span>   ";
-            dnd-none = "   ";
-            inhibited-notification = "<span foreground='red'><sup></sup></span>   ";
+            notification = " ";
+            none = " ";
+            dnd-notification = " ";
+            dnd-none = " ";
+            inhibited-notification = " ";
             inhibited-none = "   ";
-            dnd-inhibited-notification = "<span foreground='red'><sup></sup></span>   ";
-            dnd-inhibited-none = "   ";
+            dnd-inhibited-notification = " ";
+            dnd-inhibited-none = " ";
         };
         return-type = "json";
         exec-if = "which swaync-client";
