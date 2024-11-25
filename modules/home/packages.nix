@@ -5,7 +5,6 @@
     file                              # Show file information 
     hexdump
     jdk17                             # java
-    cinnamon.nemo-with-extensions     # file manager
     nitch                             # systhem fetch util
     nix-prefetch-github
     ripgrep                           # grep replacement
@@ -24,6 +23,9 @@
     enpass
     slack
     emacs29-pgtk
+    emacs-lsp-booster
+    nodePackages.prettier
+
     spotify
     feh
     evince
@@ -53,6 +55,7 @@
     pulsemixer
     pavucontrol
     wdisplays
+    nautilus
 
     python3
     python3Packages.black

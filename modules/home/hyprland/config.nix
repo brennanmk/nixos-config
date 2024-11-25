@@ -211,6 +211,7 @@
         "$mainMod, XF86MonBrightnessUp, exec, brightnessctl set 100%+"
         "$mainMod, XF86MonBrightnessDown, exec, brightnessctl set 100%-"
 
+
         "$mainMod, M, exec, hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1'"
         "$mainMod SHIFT, M, exec, hyprctl keyword monitor 'eDP-1, disable'"
       ];
@@ -297,7 +298,6 @@
 
     extraConfig = "
       monitor=,highres,auto,1
-
     ";
   };
 }
