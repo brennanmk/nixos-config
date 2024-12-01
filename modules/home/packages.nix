@@ -24,11 +24,13 @@
     enpass
     slack
     emacs29-pgtk
+    emacs-lsp-booster
+    libreoffice
     spotify
     feh
     evince
     zotero
-    vesktop
+    discord
     polybar
     obsidian
     htop
@@ -40,6 +42,9 @@
     sqlite
     nodejs
     prusa-slicer
+
+    cargo
+    rustc
 
     #image writing
     caligula
@@ -59,6 +64,10 @@
     python3Packages.python-lsp-server
     python3Packages.pyflakes
     python3Packages.mysqlclient
+
+    jetbrains.idea-ultimate
+
+    davfs2
 
     zlib
     psmisc

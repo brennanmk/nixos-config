@@ -11,14 +11,14 @@
         "nm-applet &"
         "hyprctl setcursor Nordzy-cursors 22 &"
         "poweralertd &"
-        "waybar &"
-        "swaync &"
         "swaybg -m fill -o DP-3 -i Pictures/wallpapers/wallpaper.png &"
         "swaybg -m fill -o DP-2 -i Pictures/wallpapers/verticle.jpg &"
         "swaybg -m fill -o HDMI-A-1 -i Pictures/wallpapers/verticle.jpg &"
         "swayidle -w timeout 900 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' &"
         "emacs --daemon &"
-        "sway-audio-idle-inhibit &"
+        "waybar &"
+        "swaync &"
+         "hyprctl dispatch workspace 1"
       ];
 
       input = {
@@ -52,11 +52,13 @@
         animate_manual_resizes = false;
         enable_swallow = true;
         focus_on_activate = true;
+        disable_splash_rendering = true;
       };
 
       dwindle = {
         no_gaps_when_only = true;
         force_split = 0;
+        smart_split = true;
         special_scale_factor = 1.0;
         split_width_multiplier = 1.0;
         use_active_for_splits = true;
@@ -290,14 +292,13 @@
     };
 
     extraConfig = "
-      monitor=HDMI-A-1,1920x1080,0x0,1,transform,1
       monitor=DP-3,3440x1440@165.00,1080x0,1
+      monitor=HDMI-A-1,1920x1080,0x0,1,transform,1
       monitor=DP-2,1920x1080,4520x0,1,transform,3
 
-
-      workspace = 1, monitor:HDMI-A-1, default:true
-      workspace = 2, monitor:DP-3, default:true
-      workspace = 3, monitor:DP-2, default:true
+      workspace = 8, monitor:HDMI-A-1
+      workspace = 1, monitor:DP-3, default:true
+      workspace = 9, monitor:DP-2
 
       xwayland {
         force_zero_scaling = true
