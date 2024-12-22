@@ -5,7 +5,6 @@
     file                              # Show file information 
     hexdump
     jdk17                             # java
-    cinnamon.nemo-with-extensions     # file manager
     nitch                             # systhem fetch util
     nix-prefetch-github
     ripgrep                           # grep replacement
@@ -18,18 +17,19 @@
     gcc
     gnumake
     firefox
-    enpass
     slack
-    emacs29
+    emacs-gtk
+    emacs-lsp-booster
+    nodePackages.prettier
+
     spotify
     feh
     evince
     zotero
     discord
     polybar
-    obsidian
     htop
-    cudaPackaages_12_5.cudatoolkit
+    cudatoolkit
     obs-studio
     zerotierone
     bitwarden
@@ -37,7 +37,9 @@
     zoom-us
     sqlite
     nodejs
-
+    prusa-slicer
+    steam
+    texliveFull
     #image writing
     caligula
     rpi-imager
@@ -45,8 +47,18 @@
     #xfce
     xfce.xfce4-pulseaudio-plugin
     blueberry
+    devcontainer
+    pkgs.python3
+    pkgs.python3Packages.black
+    pkgs.python3Packages.python-lsp-server
+    pkgs.python3Packages.pyflakes
+    jdt-language-server
+    marksman
+    nil
+    dockerfile-language-server-nodejs
+    docker-compose-language-service
 
-    python312
+    ollama-cuda
     zlib
     psmisc
     cmatrix
