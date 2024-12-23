@@ -33,10 +33,10 @@
 
       general = {
         "$mainMod" = "SUPER";
-        layout = "master";
-        gaps_in = 0;
-        gaps_out = 0;
-        border_size = 2;
+        layout = "dwindle";
+        gaps_in = 3;
+        gaps_out = 5;
+        border_size = 1;
         "col.active_border" = "rgb(cba6f7)";
         "col.inactive_border" = "0x00000000";
         border_part_of_window = false;
@@ -54,7 +54,6 @@
       };
 
       dwindle = {
-        no_gaps_when_only = true;
         force_split = 0;
         special_scale_factor = 1.0;
         split_width_multiplier = 1.0;
@@ -66,7 +65,6 @@
       master = {
         new_status = "master";
         special_scale_factor = 1;
-        no_gaps_when_only = false;
       };
 
       decoration = {
@@ -89,13 +87,6 @@
           xray = true;
         };
 
-        drop_shadow = true;
-
-        shadow_ignore_window = true;
-        shadow_offset = "0 2";
-        shadow_range = 20;
-        shadow_render_power = 3;
-        "col.shadow" = "rgba(00000055)";
       };
 
       animations = {

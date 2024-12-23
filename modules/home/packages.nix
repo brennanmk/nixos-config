@@ -11,7 +11,7 @@
     soundwireserver                   # pass audio to android phone
     valgrind                          # c memory analyzer
     yazi                              # terminal file manager
-    gnome.zenity
+    zenity
     polychromatic
 
     # C / C++
@@ -63,14 +63,15 @@
     python3Packages.pyflakes
     python3Packages.mysqlclient
 
+    jetbrains.idea-ultimate
     # Cursor fix
     rose-pine-cursor
     inputs.rose-pine-hyprcursor.packages.${system}.default
     nwg-look
 
+    chromium
     rclone
     btop
-
     zlib
     psmisc
     cmatrix

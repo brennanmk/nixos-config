@@ -19,7 +19,7 @@ in
                 nvidiaBusId = "PCI:1:0:0";
             };
         };
-        opengl = {
+        graphics = {
                enable = true;
                package = driverPkg;
         };
