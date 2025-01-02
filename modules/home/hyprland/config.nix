@@ -51,10 +51,12 @@
         animate_manual_resizes = false;
         enable_swallow = true;
         focus_on_activate = true;
+        disable_splash_rendering = true;
       };
 
       dwindle = {
         force_split = 0;
+        smart_split = true;
         special_scale_factor = 1.0;
         split_width_multiplier = 1.0;
         use_active_for_splits = true;
@@ -288,7 +290,17 @@
     };
 
     extraConfig = "
-      monitor=,highres,auto,1
+      monitor=DP-3,3440x1440@165.00,1080x0,1
+      monitor=HDMI-A-1,1920x1080,0x0,1,transform,1
+      monitor=DP-2,1920x1080,4520x0,1,transform,3
+
+      workspace = 8, monitor:HDMI-A-1
+      workspace = 1, monitor:DP-3, default:true
+      workspace = 9, monitor:DP-2
+
+      xwayland {
+        force_zero_scaling = true
+      }
     ";
   };
 }

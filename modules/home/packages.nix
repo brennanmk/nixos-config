@@ -24,13 +24,13 @@
     slack
     emacs29-pgtk
     emacs-lsp-booster
+    libreoffice
     nodePackages.prettier
-
     spotify
     feh
     evince
     zotero
-    vesktop
+    discord
     polybar
     obsidian
     htop
@@ -42,6 +42,9 @@
     sqlite
     nodejs
     prusa-slicer
+
+    cargo
+    rustc
 
     #image writing
     caligula
@@ -74,6 +77,8 @@
     inputs.rose-pine-hyprcursor.packages.${system}.default
     nwg-look
 
+    jetbrains.idea-ultimate
+    davfs2
     wofi
     picocom
     rclone
