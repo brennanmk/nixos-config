@@ -17,7 +17,7 @@
         "emacs --daemon &"
         "libinput-gestures &"
         "sway-audio-idle-inhibit &"
-        "swayidle -w timeout 900 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' &"
+        "swayidle -w timeout 600 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' &"
       ];
 
       input = {
@@ -129,7 +129,7 @@
         "$mainMod, F, fullscreen, 0"
         "$mainMod SHIFT, F, fullscreen, 1"
         "$mainMod, Space, togglefloating,"
-        "$mainMod, R, exec, fuzzel"
+        "$mainMod, R, exec, wofi"
         "$mainMod SHIFT, Escape, exec, shutdown-script"
         "$mainMod, P, pseudo,"
         "$mainMod, J, togglesplit,"
@@ -232,9 +232,9 @@
         "size 950 600,title:^(float_kitty)$"
         "float,audacious"
         "workspace 8 silent, audacious"
-        # "pin,wofi"
-        # "float,wofi"
-        # "noborder,wofi"
+        "pin,wofi"
+        "float,wofi"
+        "noborder,wofi"
         "tile, neovide"
         "idleinhibit focus,mpv"
         "float,udiskie"

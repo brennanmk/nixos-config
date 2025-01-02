@@ -11,8 +11,6 @@
     ++ [(import ./hyprland)]                       # window manager    
     ++ [(import ./swaync/swaync.nix)]             # notification deamon
     ++ [(import ./scripts/scripts.nix)]           # personal scripts
-    ++ [(import ./starship.nix)]
-    ++ [(import ./fuzzel.nix)]                  
     ++ [(import ./waybar)];                        # status bar
 
 }

@@ -4,31 +4,40 @@
     position= "top";
     layer= "top";
     height= 5;
-    margin-top= 0;
-    margin-bottom= 0;
-    margin-left= 0;
-    margin-right= 0;
     modules-left= [
-        "hyprland/window"
+        "custom/right-arrow-light"
+        "hyprland/workspaces"
+        "custom/right-arrow-dark"
     ];
     modules-center= [
-        "clock"
+        "custom/left-arrow-dark"
+        "clock#1"
+        "custom/left-arrow-light"
+        "custom/right-arrow-light"
+        "clock#2"
+
+        "custom/left-arrow-light"
+        "custom/right-arrow-light"
+        "clock#3"
+        "custom/right-arrow-dark"
     ];
     modules-right= [
+        "custom/left-arrow-dark"
         "network"
+        "custom/left-arrow-light"
+        "custom/left-arrow-dark"
         "pulseaudio"
+        "custom/left-arrow-light"
+        "custom/left-arrow-dark"
+        "disk"
+        "custom/left-arrow-light"
+        "custom/left-arrow-dark"
         "battery"
+        "custom/left-arrow-light"
+        "custom/left-arrow-dark"
         "custom/notification"
+        "custom/left-arrow-light"
     ];
-    clock= {
-        calendar = {
-          format = { today = "<span color='#b4befe'><b><u>{}</u></b></span>"; };
-        };
-        format = " {:%I:%M}";
-        tooltip= "true";
-        tooltip-format= "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
-        format-alt= " {:%d/%m}";
-    };
     memory= {
         format= "󰟜 {}%";
         format-alt= "󰟜 {used} GiB"; # 
@@ -37,7 +46,7 @@
     cpu= {
         format= "  {usage}%";
         format-alt= "  {avg_frequency} GHz";
-        interval= 2;
+        interval= 5;
     };
     disk = {
         # path = "/";
@@ -45,21 +54,20 @@
         interval= 60;
     };
     network = {
-        format-wifi = "";
-        format-ethernet = "󰀂";
+        format-wifi = "  Connected";
+        format-ethernet = "󰀂  Connected";
         tooltip-format = "Connected to {essid} {ifname} via {gwaddr}";
         format-linked = "{ifname} (No IP)";
-        format-disconnected = "󰖪";
+        format-disconnected = "󰖪  Disconnected";
     };
     tray= {
         icon-size= 20;
-        spacing= 8;
     };
     pulseaudio= {
-        format= "{icon} {volume}%";
+        format= "{icon}  {volume:2}%";
         format-muted= "  {volume}%";
         format-icons= {
-            default= [" "];
+            default= [""];
         };
         scroll-step= 5;
         on-click="kitty --class floating -e pulsemixer";
@@ -79,18 +87,51 @@
         tooltip-format = "{time}";
     };
 
+    "custom/left-arrow-dark" = {
+        "format"= "";
+        "tooltip"= false;
+    };
+
+    "custom/left-arrow-light"= {
+        "format"= "";
+        "tooltip"= false;
+    };
+    "custom/right-arrow-dark"= {
+        "format"= "";
+        "tooltip"= false;
+    };
+    "custom/right-arrow-light"= {
+        "format"= "";
+        "tooltip"= false;
+    };
+
+
+    "clock#1"= {
+        "format"= "{:%a}";
+        "tooltip"= false;
+    };
+    "clock#2"= {
+        "format"= "{:%I:%M}";
+        "tooltip"= false;
+    };
+    "clock#3"= {
+        "format"= "{:%m-%d}";
+        "tooltip"= false;
+    };
+
+
     "custom/notification" = {
         tooltip = false;
         format = "{icon} ";
         format-icons = {
-            notification = " ";
-            none = " ";
-            dnd-notification = " ";
-            dnd-none = " ";
-            inhibited-notification = " ";
-            inhibited-none = "   ";
-            dnd-inhibited-notification = " ";
-            dnd-inhibited-none = " ";
+            notification = "";
+            none = "";
+            dnd-notification = "";
+            dnd-none = "";
+            inhibited-notification = "";
+            inhibited-none = " ";
+            dnd-inhibited-notification = "";
+            dnd-inhibited-none = "";
         };
         return-type = "json";
         exec-if = "which swaync-client";

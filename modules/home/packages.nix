@@ -62,6 +62,11 @@
     python3Packages.python-lsp-server
     python3Packages.pyflakes
     python3Packages.mysqlclient
+    erlang
+    erlang-ls
+    rebar3
+    elixir
+    elixir-ls
 
     jetbrains.idea-ultimate
     # Cursor fix
@@ -69,7 +74,8 @@
     inputs.rose-pine-hyprcursor.packages.${system}.default
     nwg-look
 
-    chromium
+    wofi
+    picocom
     rclone
     btop
     zlib
