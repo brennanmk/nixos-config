@@ -7,7 +7,6 @@ let custom = {
     secondary_accent= "89b4fa";
     tertiary_accent = "f5f5f5";
     background = "11111";
-    opacity = "0.98";
 };
 in 
 {
@@ -20,12 +19,39 @@ in
         margin: 0;
         min-height: 0px;
         font-family: ${custom.font};
-        font-weight: ${custom.font_weight};
-        opacity: ${custom.opacity};
     }
 
     window#waybar {
-        background: #282a36;
+        background: transparent;
+        background-color: rgba(43, 48, 59, 0.5);
+        color: #ffffff;
+        transition-property: background-color;
+        transition-duration: .5s;
+    }
+
+
+    #custom-right-arrow-dark,
+    #custom-left-arrow-dark {
+        color: #1a1a1a;
+    }
+    #custom-right-arrow-light,
+    #custom-left-arrow-light {
+        color: #1a1a1a;
+    }
+
+    #workspaces,
+    #clock.1,
+    #clock.2,
+    #clock.3,
+    #pulseaudio,
+    #memory,
+    #cpu,
+    #battery,
+    #disk,
+    #network,
+    #custom-notification,
+    #tray {
+        background: #1a1a1a;
     }
 
     #workspaces {
@@ -45,60 +71,16 @@ in
         color: #b4befe;
     }
 
-    #tray, #pulseaudio, #network, #cpu, #memory, #disk, #clock, #battery, #custom-notification {
-        font-size: ${custom.font_size};
-        color: ${custom.text_color};
-    }
-
-    #cpu {
-        padding-left: 15px;
-        padding-right: 9px;
-        margin-left: 7px;
-    }
-    #memory {
-        padding-left: 9px;
-        padding-right: 9px;
-    }
+    #clock,
+    #pulseaudio,
+    #memory,
+    #cpu,
+    #battery,
+    #network,
+    #tray,
+    #custom-notification,
     #disk {
-        padding-left: 9px;
-        padding-right: 15px;
-    }
-
-    #tray {
-        padding: 0 20px;
-        margin-left: 7px;
-    }
-
-    #pulseaudio {
-        padding-left: 15px;
-        padding-right: 9px;
-        margin-left: 7px;
-    }
-    #battery {
-        padding-left: 9px;
-        padding-right: 9px;
-    }
-    #network {
-        padding-left: 9px;
-        padding-right: 30px;
-    }
-
-    custom-notification {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-    
-    #clock {
-        padding-left: 9px;
-        padding-right: 15px;
-    }
-
-    #custom-launcher {
-        font-size: 20px;
-        color: #b4befe;
-        font-weight: ${custom.font_weight};
-        padding-left: 10px;
-        padding-right: 15px;
+        padding: 0 10px;
     }
   '';
 }

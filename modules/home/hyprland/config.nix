@@ -11,14 +11,13 @@
         "nm-applet &"
         "hyprctl setcursor Nordzy-cursors 22 &"
         "poweralertd &"
-        "swaybg -m fill -o DP-3 -i Pictures/wallpapers/wallpaper.png &"
-        "swaybg -m fill -o DP-2 -i Pictures/wallpapers/verticle.jpg &"
-        "swaybg -m fill -o HDMI-A-1 -i Pictures/wallpapers/verticle.jpg &"
-        "swayidle -w timeout 900 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' &"
-        "emacs --daemon &"
         "waybar &"
         "swaync &"
-         "hyprctl dispatch workspace 1"
+        "swaybg -m fill -i Pictures/wallpapers/wallpaper.png &"
+        "emacs --daemon &"
+        "libinput-gestures &"
+        "sway-audio-idle-inhibit &"
+        "swayidle -w timeout 600 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' &"
       ];
 
       input = {
@@ -35,9 +34,9 @@
       general = {
         "$mainMod" = "SUPER";
         layout = "dwindle";
-        gaps_in = 0;
-        gaps_out = 0;
-        border_size = 2;
+        gaps_in = 3;
+        gaps_out = 5;
+        border_size = 1;
         "col.active_border" = "rgb(cba6f7)";
         "col.inactive_border" = "0x00000000";
         border_part_of_window = false;
@@ -56,7 +55,6 @@
       };
 
       dwindle = {
-        no_gaps_when_only = true;
         force_split = 0;
         smart_split = true;
         special_scale_factor = 1.0;
@@ -69,7 +67,6 @@
       master = {
         new_status = "master";
         special_scale_factor = 1;
-        no_gaps_when_only = false;
       };
 
       decoration = {
@@ -92,13 +89,6 @@
           xray = true;
         };
 
-        drop_shadow = true;
-
-        shadow_ignore_window = true;
-        shadow_offset = "0 2";
-        shadow_range = 20;
-        shadow_render_power = 3;
-        "col.shadow" = "rgba(00000055)";
       };
 
       animations = {
@@ -141,7 +131,7 @@
         "$mainMod, F, fullscreen, 0"
         "$mainMod SHIFT, F, fullscreen, 1"
         "$mainMod, Space, togglefloating,"
-        "$mainMod, R, exec, fuzzel"
+        "$mainMod, R, exec, wofi"
         "$mainMod SHIFT, Escape, exec, shutdown-script"
         "$mainMod, P, pseudo,"
         "$mainMod, J, togglesplit,"
@@ -214,6 +204,9 @@
         "$mainMod, XF86MonBrightnessUp, exec, brightnessctl set 100%+"
         "$mainMod, XF86MonBrightnessDown, exec, brightnessctl set 100%-"
 
+
+        "$mainMod, M, exec, hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1'"
+        "$mainMod SHIFT, M, exec, hyprctl keyword monitor 'eDP-1, disable'"
       ];
 
       # mouse binding
@@ -221,6 +214,11 @@
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
       ];
+
+      #bindl = [
+      #      ",switch:off:Lid Switch,exec,``hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1.25'"
+      #      ",switch:on:Lid Switch,exec,hyprctl keyword monitor 'eDP-1, disable'"
+      #];
 
       # windowrule
       windowrule = [
@@ -236,9 +234,9 @@
         "size 950 600,title:^(float_kitty)$"
         "float,audacious"
         "workspace 8 silent, audacious"
-        # "pin,wofi"
-        # "float,wofi"
-        # "noborder,wofi"
+        "pin,wofi"
+        "float,wofi"
+        "noborder,wofi"
         "tile, neovide"
         "idleinhibit focus,mpv"
         "float,udiskie"

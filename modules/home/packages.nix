@@ -5,14 +5,13 @@
     file                              # Show file information 
     hexdump
     jdk17                             # java
-    cinnamon.nemo-with-extensions     # file manager
     nitch                             # systhem fetch util
     nix-prefetch-github
     ripgrep                           # grep replacement
     soundwireserver                   # pass audio to android phone
     valgrind                          # c memory analyzer
     yazi                              # terminal file manager
-    gnome.zenity
+    zenity
     polychromatic
 
     # C / C++
@@ -26,6 +25,7 @@
     emacs29-pgtk
     emacs-lsp-booster
     libreoffice
+    nodePackages.prettier
     spotify
     feh
     evince
@@ -58,17 +58,31 @@
     pulsemixer
     pavucontrol
     wdisplays
+    nautilus
 
     python3
     python3Packages.black
     python3Packages.python-lsp-server
     python3Packages.pyflakes
     python3Packages.mysqlclient
+    erlang
+    erlang-ls
+    rebar3
+    elixir
+    elixir-ls
 
     jetbrains.idea-ultimate
+    # Cursor fix
+    rose-pine-cursor
+    inputs.rose-pine-hyprcursor.packages.${system}.default
+    nwg-look
 
+    jetbrains.idea-ultimate
     davfs2
-
+    wofi
+    picocom
+    rclone
+    btop
     zlib
     psmisc
     cmatrix
