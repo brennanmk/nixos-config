@@ -12,7 +12,7 @@
         else [ ./../home ];
       home.username = "${username}";
       home.homeDirectory = "/home/${username}";
-      home.stateVersion = "22.11";
+      home.stateVersion = "24.05";
       programs.home-manager.enable = true;
     };
   };
@@ -20,7 +20,7 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "${username}";
-    extraGroups = [ "networkmanager" "wheel" "docker" "input" "dialout"];
+    extraGroups = [ "networkmanager" "wheel" "docker" "input" "dialout" "openrazer" "davfs2"];
     shell = pkgs.zsh;
   };
   nix.settings.allowed-users = [ "${username}" ];

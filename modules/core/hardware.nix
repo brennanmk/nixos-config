@@ -1,12 +1,8 @@
 { pkgs, ... }:
 {  
-  hardware.graphics.enable = true;
   hardware.enableRedistributableFirmware = true;
-  hardware.graphics.extraPackages = with pkgs; [
-    intel-media-driver
-    vaapiIntel
-    vaapiVdpau
-    libvdpau-va-gl
-    nvidia-vaapi-driver
-  ];
+
+ hardware.bluetooth.enable = true; # enables support for Bluetooth
+ hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+
 }

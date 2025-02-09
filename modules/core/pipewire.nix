@@ -1,7 +1,18 @@
-{pkgs, ... }: 
+{ pkgs, ... }: 
 {
-  sound.enable = true;
-  hardware.pulseaudio.enable = true;
-  hardware.pulseaudio.support32Bit = true;
-  hardware.pulseaudio.package = pkgs.pulseaudioFull;
+  hardware.pulseaudio.enable = false;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    pulse.enable = true;
+    # lowLatency.enable = true;
+    #
+    wireplumber = {
+      enable = true;
+      configPackages = [];
+    };
+  };
+  environment.systemPackages = with pkgs; [
+    pulseaudioFull
+  ];
 }

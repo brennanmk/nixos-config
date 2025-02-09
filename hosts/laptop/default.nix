@@ -14,8 +14,6 @@
     powertop
     libinput
     libinput-gestures
-    devenv
-    direnv
   ];
   
   services = {    

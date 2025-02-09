@@ -1,7 +1,9 @@
 { config, pkgs, username, ... }:
 {
   # Enable docker
+  hardware.nvidia-container-toolkit.enable = true;
   virtualisation.docker.enable = true;
+  virtualisation.docker.package = pkgs.docker_25;
   # Add user to libvirtd group
   users.users.${username}.extraGroups = [ "libvirtd" ];
 
@@ -13,7 +15,7 @@
     spice-protocol
     win-virtio
     win-spice
-    gnome.adwaita-icon-theme
+    adwaita-icon-theme
   ];
 
   # Manage the virtualisation services
