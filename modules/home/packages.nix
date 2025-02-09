@@ -22,10 +22,9 @@
 
     # general appliactions
     firefox
-    enpass
     slack
     emacs29-pgtk
-    vscodium
+
     spotify
     feh
     evince
@@ -33,6 +32,10 @@
     libreoffice
     htop
     cudatoolkit
+    polybar
+    htop
+    cudatoolkit
+    obs-studio
     zerotierone
     bitwarden
     sqlite
@@ -45,6 +48,10 @@
 
     cargo
     rustc
+
+    prusa-slicer
+    steam
+    texliveFull
 
     #image writing
     caligula
@@ -74,17 +81,29 @@
     ollama-cuda
     nvidia-container-toolkit
 
-    # Cursor fix
-    rose-pine-cursor
-    inputs.rose-pine-hyprcursor.packages.${system}.default
-    nwg-look
-    powerline-fonts
+
 
     davfs2
     wofi
     picocom
     rclone
-    btop
+
+    #xfce
+    xfce.xfce4-pulseaudio-plugin
+    blueberry
+    devcontainer
+    pkgs.python3
+    pkgs.python3Packages.black
+    pkgs.python3Packages.python-lsp-server
+    pkgs.python3Packages.pyflakes
+    jdt-language-server
+    marksman
+    nil
+    dockerfile-language-server-nodejs
+    docker-compose-language-service
+
+    ollama-cuda
+
     zlib
     psmisc
     cmatrix

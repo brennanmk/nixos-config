@@ -36,6 +36,8 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  hardware.nvidia-container-toolkit.enable = true;
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   services.blueman.enable = true;
 }
