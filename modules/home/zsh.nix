@@ -23,7 +23,6 @@
       ssh = "kitty +kitten ssh";
       doom = "~/.config/emacs/bin/doom";
       phone = "f() { curl --silent --output nul -d $1 https://ntfy.bmillerklugman.me/phone };f";
-      emacs = "emacsclient -c";
     };
 
     initExtra = ''

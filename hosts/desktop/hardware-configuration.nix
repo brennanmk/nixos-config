@@ -30,5 +30,6 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
+  services.blueman.enable = true;
 }

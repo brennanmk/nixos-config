@@ -13,9 +13,8 @@
         "poweralertd &"
         "waybar &"
         "swaync &"
-        "swaybg -m fill -i Pictures/wallpapers/wallpaper.png &"
+        "swaybg -m fill -o DP-3 -i Pictures/wallpapers/wallpaper.png"
         "emacs --daemon &"
-        "libinput-gestures &"
         "sway-audio-idle-inhibit &"
         "swayidle -w timeout 600 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' &"
       ];
@@ -34,8 +33,8 @@
       general = {
         "$mainMod" = "SUPER";
         layout = "dwindle";
-        gaps_in = 3;
-        gaps_out = 5;
+        gaps_in = 2;
+        gaps_out = 4;
         border_size = 1;
         "col.active_border" = "rgb(cba6f7)";
         "col.inactive_border" = "0x00000000";
@@ -205,8 +204,6 @@
         "$mainMod, XF86MonBrightnessDown, exec, brightnessctl set 100%-"
 
 
-        "$mainMod, M, exec, hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1'"
-        "$mainMod SHIFT, M, exec, hyprctl keyword monitor 'eDP-1, disable'"
       ];
 
       # mouse binding

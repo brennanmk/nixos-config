@@ -3,40 +3,25 @@
   programs.waybar.settings.mainBar = {
     position= "top";
     layer= "top";
-    height= 5;
+    output= "DP-3";
+    height= 25;
     modules-left= [
-        "custom/right-arrow-light"
         "hyprland/workspaces"
-        "custom/right-arrow-dark"
+        "custom/right-arrow"
     ];
     modules-center= [
-        "custom/left-arrow-dark"
+        "custom/left-arrow"
         "clock#1"
-        "custom/left-arrow-light"
-        "custom/right-arrow-light"
         "clock#2"
-
-        "custom/left-arrow-light"
-        "custom/right-arrow-light"
         "clock#3"
-        "custom/right-arrow-dark"
+        "custom/right-arrow"
     ];
     modules-right= [
-        "custom/left-arrow-dark"
+        "custom/left-arrow"
         "network"
-        "custom/left-arrow-light"
-        "custom/left-arrow-dark"
         "pulseaudio"
-        "custom/left-arrow-light"
-        "custom/left-arrow-dark"
         "disk"
-        "custom/left-arrow-light"
-        "custom/left-arrow-dark"
-        "battery"
-        "custom/left-arrow-light"
-        "custom/left-arrow-dark"
         "custom/notification"
-        "custom/left-arrow-light"
     ];
     memory= {
         format= "󰟜 {}%";
@@ -87,24 +72,20 @@
         tooltip-format = "{time}";
     };
 
-    "custom/left-arrow-dark" = {
+    "custom/left-arrow" = {
         "format"= "";
         "tooltip"= false;
     };
 
-    "custom/left-arrow-light"= {
-        "format"= "";
-        "tooltip"= false;
-    };
-    "custom/right-arrow-dark"= {
+    "custom/right-arrow"= {
         "format"= "";
         "tooltip"= false;
     };
-    "custom/right-arrow-light"= {
-        "format"= "";
+
+    "custom/sep"= {
+        "format"= " ";
         "tooltip"= false;
     };
-
 
     "clock#1"= {
         "format"= "{:%a}";

@@ -17,31 +17,31 @@
     # C / C++
     gcc
     gnumake
+    cmake
+    libtool
 
     # general appliactions
     firefox
     enpass
     slack
     emacs29-pgtk
-    emacs-lsp-booster
-    libreoffice
-    nodePackages.prettier
+    vscodium
     spotify
     feh
     evince
     zotero
-    discord
-    polybar
-    obsidian
+    libreoffice
     htop
     cudatoolkit
-    obs-studio
     zerotierone
     bitwarden
-    unityhub
     sqlite
-    nodejs
     prusa-slicer
+    vesktop
+    obs-studio
+
+    nodejs
+    nodePackages.prettier
 
     cargo
     rustc
@@ -70,14 +70,16 @@
     rebar3
     elixir
     elixir-ls
+    inotify-tools
+    ollama-cuda
+    nvidia-container-toolkit
 
-    jetbrains.idea-ultimate
     # Cursor fix
     rose-pine-cursor
     inputs.rose-pine-hyprcursor.packages.${system}.default
     nwg-look
+    powerline-fonts
 
-    jetbrains.idea-ultimate
     davfs2
     wofi
     picocom
