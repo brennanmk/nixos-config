@@ -50,13 +50,10 @@
     rustc
 
     prusa-slicer
-    steam
-    texliveFull
 
     #image writing
     caligula
     rpi-imager
-    texlive.combined.scheme-full
     swayidle
     sway-audio-idle-inhibit
 
@@ -78,10 +75,8 @@
     elixir
     elixir-ls
     inotify-tools
-    ollama-cuda
     nvidia-container-toolkit
-
-
+    texliveFull
 
     davfs2
     wofi
@@ -89,7 +84,6 @@
     rclone
 
     #xfce
-    xfce.xfce4-pulseaudio-plugin
     blueberry
     devcontainer
     pkgs.python3

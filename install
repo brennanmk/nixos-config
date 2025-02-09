@@ -79,7 +79,41 @@ install_desktop() {
     # Build the system (flakes + home manager)
     echo -e "\nBuilding the system...\n"
     sudo nixos-rebuild switch --flake .#${HOST}
+}
 
+configure_desktop() {
+    echo -e "\n${RED}START CONFIGURATION PHASE${NORMAL}\n"
+    sleep 0.2
+
+    # Create basic directories
+    echo -e "Creating folders:"
+    mkdir -p ~/.local/bin
+    mkdir -p ~/Pictures/wallpapers
+    sleep 0.2
+
+    echo -e "Copying ${MAGENTA}wallpapers${NORMAL}"
+    cp -r wallpapers/${HOST}/* ~/Pictures/wallpapers/
+    sleep 0.2
+
+    echo -e "Copying ${MAGENTA}scripts${NORMAL}"
+    cp scripts/* ~/.local/bin
+    sleep 0.2
+
+    echo -e "Copying ${MAGENTA}Xresouces config${NORMAL}"
+    cp configs/${HOST}/Xresources ~/.Xresources
+    sleep 0.2
+
+    echo -e "Copying all ${MAGENTA}doom config${NORMAL}"
+    cp -r configs/common/doom/ ~/.config/doom
+    sleep 0.2
+
+    echo -e "Installing ${MAGENTA}doom${NORMAL}"
+    git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
+    ~/.config/emacs/bin/doom install
+    rm -rf ~/emacs.d
+}
+
+reboot() {
     echo -en "Would you like to reboot now "
     confirm
     sudo reboot now
@@ -95,6 +129,9 @@ main() {
     get_host
     
     install_desktop
+    configure_desktop
+
+    reboot
 }
 
 main && exit 0
