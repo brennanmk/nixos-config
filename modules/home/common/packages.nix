@@ -23,7 +23,7 @@
     # general appliactions
     firefox
     slack
-    emacs29-pgtk
+    emacs30-pgtk
 
     spotify
     feh
@@ -53,7 +53,6 @@
 
     #image writing
     caligula
-    rpi-imager
     swayidle
     sway-audio-idle-inhibit
 
@@ -82,6 +81,7 @@
     wofi
     picocom
     rclone
+    wl-mirror
 
     #xfce
     blueberry

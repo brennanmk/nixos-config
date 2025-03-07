@@ -92,11 +92,7 @@ configure_desktop() {
     sleep 0.2
 
     echo -e "Copying ${MAGENTA}wallpapers${NORMAL}"
-    cp -r wallpapers/${HOST}/* ~/Pictures/wallpapers/
-    sleep 0.2
-
-    echo -e "Copying ${MAGENTA}scripts${NORMAL}"
-    cp scripts/* ~/.local/bin
+    cp -r configs/wallpapers/${HOST}/* ~/Pictures/wallpapers/
     sleep 0.2
 
     echo -e "Copying ${MAGENTA}Xresouces config${NORMAL}"

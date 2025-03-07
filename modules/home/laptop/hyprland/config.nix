@@ -13,10 +13,11 @@
         "poweralertd &"
         "waybar &"
         "swaync &"
-        "swaybg -m fill -o DP-3 -i Pictures/wallpapers/wallpaper.png"
+        "swaybg -m fill -i Pictures/wallpapers/wallpaper.png"
         "emacs --daemon &"
         "sway-audio-idle-inhibit &"
         "swayidle -w timeout 600 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' &"
+        "hyprlock"
       ];
 
       input = {
@@ -38,7 +39,6 @@
         border_size = 1;
         "col.active_border" = "rgb(cba6f7)";
         "col.inactive_border" = "0x00000000";
-        border_part_of_window = false;
         no_border_on_floating = false;
       };
 
@@ -287,13 +287,7 @@
     };
 
     extraConfig = "
-      monitor=DP-3,3440x1440@165.00,1080x0,1
-      monitor=HDMI-A-1,1920x1080,0x0,1,transform,1
-      monitor=DP-2,1920x1080,4520x0,1,transform,3
-
-      workspace = 8, monitor:HDMI-A-1
-      workspace = 1, monitor:DP-3, default:true
-      workspace = 9, monitor:DP-2
+      monitor=,preferred,auto,1
 
       xwayland {
         force_zero_scaling = true

@@ -8,11 +8,13 @@
     users.${username} = {
       imports = 
         if (host == "desktop") then 
-          [ ./../home/default.desktop.nix ] 
-        else [ ./../home ];
+          [ ./../home/desktop ]
+          ++ [./../home/common]
+        else [ ./../home/laptop ]
+              ++ [./../home/common];
       home.username = "${username}";
       home.homeDirectory = "/home/${username}";
-      home.stateVersion = "24.05";
+      home.stateVersion = "25.05";
       programs.home-manager.enable = true;
     };
   };

@@ -1,4 +1,4 @@
-{ ... }: 
+{ username, ... }:
 {
   services = {
     logind.lidSwitch = "ignore";
@@ -7,6 +7,10 @@
     dbus.enable = true;
     fstrim.enable = true;
     printing.enable = true;
+    displayManager.autoLogin = {
+      enable = true;
+      user = "${username}";
+    };
   };
 
   services.avahi = {

@@ -6,9 +6,6 @@
 
     xkb.layout = "us";
 
-    displayManager = {
-      gdm.enable = true;
-    };
 
   };
   # To prevent getting stuck at shutdown

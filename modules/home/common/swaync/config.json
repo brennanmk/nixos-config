@@ -56,7 +56,6 @@
             "label": " 󱋆  Display Settings",
             "command": "wdisplays"
           }
-
         ]
       },
       "menu#screenshot": {
@@ -69,29 +68,17 @@
           },
           {
             "label": "󰩭  Window / Region",
-            "command": "grimblast --notify --cursor --freeze copy area"
+            "command": "grimblast --notify --freeze copy area"
           }
         ]
       },
-      "menu#record": {
-        "label": " 󰕧 ",
+      "menu#file": {
+        "label": "  ",
         "position": "left",
         "actions": [
           {
-            "label": "  Record screen",
-            "command": "record screen & ; swaync-client -t"
-          },
-          {
-            "label": "  Record selection",
-            "command": "record area & ; swaync-client -t"
-          },
-          {
-            "label": "  Record GIF",
-            "command": "record gif & ; swaync-client -t"
-          },
-          {
-            "label": "󰻃  Stop",
-            "command": "record stop"
+            "label": " Files",
+            "command": "nautilus . &"
           }
         ]
       },
@@ -101,8 +88,7 @@
         "actions": [
           {
             "label": "  Lock",
-            "command": "hyprctl dispatch exit"
-
+            "command": "hyprlock"
           },
           {
             "label": "  Reboot",
