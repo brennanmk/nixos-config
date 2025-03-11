@@ -94,8 +94,6 @@
     dockerfile-language-server-nodejs
     docker-compose-language-service
 
-    ollama-cuda
-
     zlib
     psmisc
     cmatrix

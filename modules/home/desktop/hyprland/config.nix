@@ -15,8 +15,6 @@
         "swaync &"
         "swaybg -m fill -o DP-3 -i Pictures/wallpapers/wallpaper.png"
         "emacs --daemon &"
-        "sway-audio-idle-inhibit &"
-        "swayidle -w timeout 600 &"
         "hyprlock"
       ];
 

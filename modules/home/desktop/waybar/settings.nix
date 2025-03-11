@@ -3,6 +3,7 @@
   programs.waybar.settings.mainBar = {
     position= "top";
     layer= "top";
+    output= "DP-3";
     height= 25;
     modules-left= [
         "hyprland/workspaces"

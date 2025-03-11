@@ -28,7 +28,7 @@ in
 
     # INPUT FIELD
     input-field {
-        monitor =
+        monitor = DP-3
         size = 250, 60
         outline_thickness = 2
         dots_size = 0.2 # Scale of input-field height, 0.2 - 0.8
@@ -49,7 +49,7 @@ in
 
     # DATE
     label {
-      monitor =
+      monitor = DP-3
       text = cmd[update:1000] echo "$(date +"%A, %B %d")"
       color = rgba(242, 243, 244, 0.75)
       font_size = 22
@@ -61,7 +61,8 @@ in
 
     # TIME
     label {
-      monitor =
+
+      monitor = DP-3
       text = cmd[update:1000] echo "$(date +"%-I:%M")"
       color = rgba(242, 243, 244, 0.75)
       font_size = 95
