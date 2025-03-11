@@ -16,7 +16,7 @@
         "swaybg -m fill -o DP-3 -i Pictures/wallpapers/wallpaper.png"
         "emacs --daemon &"
         "sway-audio-idle-inhibit &"
-        "swayidle -w timeout 600 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' &"
+        "swayidle -w timeout 600 &"
         "hyprlock"
       ];
 
@@ -212,10 +212,10 @@
         "$mainMod, mouse:273, resizewindow"
       ];
 
-      #bindl = [
-      #      ",switch:off:Lid Switch,exec,``hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1.25'"
-      #      ",switch:on:Lid Switch,exec,hyprctl keyword monitor 'eDP-1, disable'"
-      #];
+      bindl = [
+           ",switch:off:Lid Switch,exec,``hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1 && hyprlock'"
+           ",switch:on:Lid Switch,exec,hyprctl keyword monitor 'eDP-1, disable'"
+      ];
 
       # windowrule
       windowrule = [

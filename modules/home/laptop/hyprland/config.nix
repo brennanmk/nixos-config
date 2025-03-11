@@ -15,8 +15,6 @@
         "swaync &"
         "swaybg -m fill -i Pictures/wallpapers/wallpaper.png"
         "emacs --daemon &"
-        "sway-audio-idle-inhibit &"
-        "swayidle -w timeout 600 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' &"
         "hyprlock"
       ];
 

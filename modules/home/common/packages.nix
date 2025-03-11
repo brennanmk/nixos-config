@@ -53,8 +53,6 @@
 
     #image writing
     caligula
-    swayidle
-    sway-audio-idle-inhibit
 
     #system utils
     bluetuith
