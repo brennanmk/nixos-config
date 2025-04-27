@@ -13,6 +13,13 @@
     };
   };
 
+  services.zerotierone = {
+    enable = true;
+    joinNetworks = [
+      "a84ac5c10ad39a1c"
+    ];
+  };
+
   services.avahi = {
     enable = true;
     nssmdns4 = true;

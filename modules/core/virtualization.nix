@@ -3,7 +3,7 @@
   # Enable docker
   hardware.nvidia-container-toolkit.enable = true;
   virtualisation.docker.enable = true;
-  virtualisation.docker.package = pkgs.docker_25;
+  virtualisation.docker.package = pkgs.docker;
   # Add user to libvirtd group
   users.users.${username}.extraGroups = [ "libvirtd" ];
 

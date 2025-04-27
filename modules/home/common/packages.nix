@@ -36,7 +36,6 @@
     htop
     cudatoolkit
     obs-studio
-    zerotierone
     bitwarden
     sqlite
     prusa-slicer
@@ -91,6 +90,7 @@
     jdt-language-server
     marksman
     nil
+    docker-compose
     dockerfile-language-server-nodejs
     docker-compose-language-service
     zlib

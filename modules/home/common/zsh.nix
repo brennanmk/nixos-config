@@ -20,7 +20,7 @@
       nix-switchu = "sudo nixos-rebuild switch --upgrade --flake ~/nixos-config#${host}";
       nix-flake-update = "sudo nix flake update ~/nixos-config#";
       nix-clean = "sudo nix-collect-garbage && sudo nix-collect-garbage -d && sudo rm /nix/var/nix/gcroots/auto/* && nix-collect-garbage && nix-collect-garbage -d";
-      ssh = "kitty +kitten ssh";
+      sshk = "kitty +kitten ssh";
       doom = "~/.config/emacs/bin/doom";
       phone = "f() { curl --silent --output nul -d $1 https://ntfy.bmillerklugman.me/phone };f";
     };
