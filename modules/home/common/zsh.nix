@@ -8,10 +8,13 @@
       enable = true;
       plugins = [ "git" "direnv"];
     };
-    initExtraFirst = ''
+    initContent = ''
       DISABLE_MAGIC_FUNCTIONS=true
       export "MICRO_TRUECOLOR=1"
+      TERM=xterm-256color
+      bindkey '^ ' autosuggest-accept
     '';
+
     shellAliases = {
       # Nixos
       mirror = "xrandr --output HDMI-0 --auto --scale-from 2560x1600 --same-as DP-4";
@@ -24,10 +27,6 @@
       doom = "~/.config/emacs/bin/doom";
       phone = "f() { curl --silent --output nul -d $1 https://ntfy.bmillerklugman.me/phone };f";
     };
-
-    initExtra = ''
-        bindkey '^ ' autosuggest-accept
-        '';
 
   };
 

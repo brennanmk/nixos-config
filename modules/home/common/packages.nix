@@ -11,8 +11,7 @@
     soundwireserver                   # pass audio to android phone
     valgrind                          # c memory analyzer
     yazi                              # terminal file manager
-    zenity
-    polychromatic
+    teams-for-linux
 
     # C / C++
     gcc
@@ -24,6 +23,7 @@
     firefox
     slack
     emacs30-pgtk
+    emacs-lsp-booster
 
     spotify
     feh
@@ -34,21 +34,17 @@
     cudatoolkit
     polybar
     htop
-    cudatoolkit
     obs-studio
     bitwarden
     sqlite
-    prusa-slicer
+    super-slicer
     vesktop
     obs-studio
 
     nodejs
-    nodePackages.prettier
 
     cargo
     rustc
-
-    prusa-slicer
 
     #image writing
     caligula
@@ -85,12 +81,25 @@
     devcontainer
     pkgs.python3
     pkgs.python3Packages.black
-    pkgs.python3Packages.python-lsp-server
     pkgs.python3Packages.pyflakes
+    pkgs.python3Packages.epc
+    pkgs.python3Packages.orjson
+    pkgs.python3Packages.sexpdata
+    pkgs.python3Packages.six
+    pkgs.python3Packages.setuptools
+    pkgs.python3Packages.paramiko
+    pkgs.python3Packages.rapidfuzz
+    pkgs.python3Packages.watchdog
+    pkgs.python3Packages.packaging
+    pyright
+    ruff
+    aspell
     jdt-language-server
     marksman
     nil
     docker-compose
+    yaml-language-server
+    lemminx
     dockerfile-language-server-nodejs
     docker-compose-language-service
     zlib

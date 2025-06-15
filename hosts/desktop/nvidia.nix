@@ -1,12 +1,13 @@
 { pkgs, config, libs, ... }:
 
 {  
-
+  services.xserver.enable = true;
   services.xserver.videoDrivers = ["nvidia"];
 
   hardware = {
     graphics = {
       enable = true;
+      enable32Bit = true;
       extraPackages = with pkgs; [nvidia-vaapi-driver intel-media-driver];
     };
 
