@@ -4,13 +4,11 @@
     bitwise                           # cli tool for bit / hex manipulation
     file                              # Show file information 
     hexdump
-    jdk17                             # java
+    jdk17                             
     nitch                             # systhem fetch util
     nix-prefetch-github
     ripgrep                           # grep replacement
     soundwireserver                   # pass audio to android phone
-    valgrind                          # c memory analyzer
-    yazi                              # terminal file manager
     teams-for-linux
 
     # C / C++
@@ -48,6 +46,7 @@
 
     #image writing
     caligula
+    quickemu
 
     #system utils
     bluetuith
@@ -56,16 +55,6 @@
     wdisplays
     nautilus
 
-    python3
-    python3Packages.black
-    python3Packages.python-lsp-server
-    python3Packages.pyflakes
-    python3Packages.mysqlclient
-    erlang
-    erlang-ls
-    rebar3
-    elixir
-    elixir-ls
     inotify-tools
     nvidia-container-toolkit
     texliveFull
@@ -79,6 +68,8 @@
     #xfce
     blueberry
     devcontainer
+
+    # python
     pkgs.python3
     pkgs.python3Packages.black
     pkgs.python3Packages.pyflakes
