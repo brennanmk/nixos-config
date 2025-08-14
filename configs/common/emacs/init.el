@@ -50,7 +50,7 @@
 (setq-default cursor-in-non-selected-windows nil)
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file 'noerror 'nomessage)
-(set-frame-font "Monospace 10" t t) ; Set a default font
+(add-to-list 'default-frame-alist '(font . "Monospace 10"))
 (setq-default tab-width 4)           ; Set default tab width
 (setq-default indent-tabs-mode nil)  ; Use spaces instead of tabs
 (setq-default electric-indent-chars '(?\n ?\^?))
@@ -106,6 +106,16 @@
 (setq doom-modeline-display-debug-info nil)
 (doom-modeline-mode 1)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; HL Todo
+;;
+;; Highlight todo comments
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package hl-todo
+  :straight t
+  :config
+  (global-hl-todo-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Vim Emulation (Evil Mode)
@@ -168,6 +178,10 @@
   "w =" 'balance-windows
   "w m" 'maximize-window
   "w M" 'restore-window-configuration
+  "<left>" 'windmove-left
+  "<right>" 'windmove-right
+  "<up>" 'windmove-up
+  "<down>" 'windmove-down
   ;; SEARCH & REPLACE
   "s s" 'swiper
   "s r" 'query-replace
@@ -286,8 +300,26 @@
 
 (straight-use-package 'swiper)
 (straight-use-package 'counsel)
-(straight-use-package 'projectile)
+(straight-use-package 'counsel-projectile)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Projectile
+;;
+;; This section configures Projectile to find and remember your projects.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package projectile
+  :straight t
+  :init
+  ;; This ensures Projectile is enabled from the start.
+  ;; You can also use `(projectile-mode)` to enable it for specific modes.
+  (projectile-mode +1)
+  ;; This enables persistent caching, which saves the list of known projects
+  ;; so they are available on startup.
+  (setq projectile-enable-caching t)
+  :config
+  ;; Projectile saves its cache in this file. It's a good idea to know where it is.
+  (setq projectile-project-list-file (expand-file-name ".projectile.cache" user-emacs-directory)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Language Server Protocol (LSP)
@@ -439,6 +471,13 @@
 
 ;; Python
 (straight-use-package 'python-mode)
+
+;; web
+(straight-use-package 'web-mode)
+
+;; config stuff
+(straight-use-package 'json-mode)
+(straight-use-package 'yaml-mode)
 
 ;; LaTeX
 (straight-use-package 'auctex)
