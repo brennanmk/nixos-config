@@ -24,6 +24,16 @@ in
       name = "Dracula";
       package = pkgs.dracula-theme;
     };
+    gtk4 = {
+      extraConfig = {
+        "gtk-application-prefer-dark-theme" = 1;
+      };
+      theme = {
+        name = "Adwaita";
+        package = pkgs.adwaita-qt;
+      };
+    };
+
     iconTheme = {
       name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme.override { color = "black"; };

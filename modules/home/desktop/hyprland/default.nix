@@ -1,8 +1,10 @@
-{ inputs, ... }: 
+{ inputs, ... }:
 {
-  imports = [ (import ./hyprland.nix) ]
-    ++ [ (import ./config.nix) ]
-    ++ [ (import ./hyprlock.nix) ]
-    ++ [ (import ./hypridle.nix) ]
-    ++ [ (import ./variables.nix) ];
+  imports = [
+    ./hyprland.nix
+    ./config.nix
+    ./hyprlock.nix
+    ./hypridle.nix
+    ./variables.nix
+  ];
 }

@@ -211,41 +211,36 @@
         "$mainMod, mouse:273, resizewindow"
       ];
 
-      bindl = [
-           ",switch:off:Lid Switch,exec,``hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1 && hyprlock'"
-           ",switch:on:Lid Switch,exec,hyprctl keyword monitor 'eDP-1, disable'"
-      ];
+      #bindl = [
+      #      ",switch:off:Lid Switch,exec,``hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1.25'"
+      #      ",switch:on:Lid Switch,exec,hyprctl keyword monitor 'eDP-1, disable'"
+      #];
 
-      # windowrule
-      windowrule = [
-        "float,imv"
-        "center,imv"
-        "size 1200 725,imv"
-        "float,mpv"
-        "center,mpv"
-        "tile,Aseprite"
-        "size 1200 725,mpv"
+      windowrulev2 = [
+        # Converted from old windowrule syntax (mostly class matches)
+        "center,class:^(imv)$"
+        "size 1200 725,class:^(imv)$"
+        "float,class:^(mpv)$"
+        "center,class:^(mpv)$"
+        "tile,class:^(Aseprite)$"
+        "size 1200 725,class:^(mpv)$" # Note: mpv size rule applied here
+        "float,class:^(audacious)$"
+        "workspace 8 silent,class:^(audacious)$"
+        "pin,class:^(wofi)$"
+        "float,class:^(wofi)$"
+        "noborder,class:^(wofi)$"
+        "tile,class:^(neovide)$"
+        "idleinhibit focus,class:^(mpv)$"
+        "float,class:^(udiskie)$"
         "float,title:^(float_kitty)$"
         "center,title:^(float_kitty)$"
         "size 950 600,title:^(float_kitty)$"
-        "float,audacious"
-        "workspace 8 silent, audacious"
-        "pin,wofi"
-        "float,wofi"
-        "noborder,wofi"
-        "tile, neovide"
-        "idleinhibit focus,mpv"
-        "float,udiskie"
         "float,title:^(Transmission)$"
         "float,title:^(Volume Control)$"
         "float,title:^(Firefox — Sharing Indicator)$"
         "move 0 0,title:^(Firefox — Sharing Indicator)$"
-        "size 700 450,title:^(Volume Control)$"
+        "size 700 450,title:^(Volume Control)$" # Note: Volume Control size rule applied here
         "move 40 55%,title:^(Volume Control)$"
-      ];
-
-      # windowrulev2
-      windowrulev2 = [
         "float, title:^(Picture-in-Picture)$"
         "opacity 1.0 override 1.0 override, title:^(Picture-in-Picture)$"
         "pin, title:^(Picture-in-Picture)$"

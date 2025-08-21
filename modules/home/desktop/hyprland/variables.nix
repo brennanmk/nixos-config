@@ -1,5 +1,4 @@
-{ ... }:
-{ inputs, pkgs, ... }:
+{ pkgs, ... }:
 {
   home.sessionVariables = {
     NIXOS_OZONE_WL = "1";
@@ -32,6 +31,6 @@
     GTK_THEME = "Dracula";
     HYPRCURSOR_SIZE="28";
     HYPRCURSOR_THEME="rose-pine-hyprcursor";
-    LSP_BRIDGE_PYTHON_COMMAND = "${pkgs.python3.withPackages (p: with p; [ pkgs.epc ])}/bin/python";
+    LSP_BRIDGE_PYTHON_COMMAND = "${pkgs.python3.withPackages (p: with p; [ epc watchdog sexpdata ])}/bin/python";
   };
 }
