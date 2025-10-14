@@ -2,5 +2,7 @@
   imports = [
     ./hyprland
     ./waybar
+    ./packages.nix
+    ./zsh.nix
   ];
 }

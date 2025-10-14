@@ -1,5 +1,9 @@
-{inputs, username, host, ...}: {
-  imports =
-    [(import ./hyprland)]                       # window manager
-    ++ [(import ./waybar)];                        # status bar
+{ inputs, username, host, ...}: {
+  imports = [
+    ./hyprland
+    ./waybar
+    ./packages.nix
+    ./zsh.nix
+    ./swaync/swaync.nix
+  ];
 }

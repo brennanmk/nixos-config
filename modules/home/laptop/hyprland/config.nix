@@ -12,8 +12,8 @@
         "hyprctl setcursor Nordzy-cursors 22 &"
         "poweralertd &"
         "waybar &"
-        "swaync &"
-        "swaybg -m fill -i Pictures/wallpapers/wallpaper.png"
+        "mako &"
+        "hyprpaper &"
         "emacs --daemon &"
         "hypridle"
         "hyprlock"
@@ -211,10 +211,10 @@
         "$mainMod, mouse:273, resizewindow"
       ];
 
-      #bindl = [
-      #      ",switch:off:Lid Switch,exec,``hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1.25'"
-      #      ",switch:on:Lid Switch,exec,hyprctl keyword monitor 'eDP-1, disable'"
-      #];
+      bindl = [
+           ",switch:off:Lid Switch,exec,``hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1.25'"
+           ",switch:on:Lid Switch,exec,hyprctl keyword monitor 'eDP-1, disable'"
+      ];
 
       windowrulev2 = [
         # Converted from old windowrule syntax (mostly class matches)

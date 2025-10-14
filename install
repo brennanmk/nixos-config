@@ -22,17 +22,21 @@ confirm() {
     echo -en "[${GREEN}y${NORMAL}/${RED}n${NORMAL}]: "
     read -n 1 -r
     echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-    then
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         exit 0
     fi
 }
 
 print_header() {
-    echo -E "$RED 
+    # Added usage instructions for the new install-only option
+    echo -E "$RED
       ! To make sure everything runs correctly DONT run as root ! $GREEN
-                        -> '"./install.sh"' $NORMAL
+                      -> '"./install.sh"' $NORMAL
 
+    ${CYAN}Usage:${NORMAL}
+      ./install.sh              (Full install and configuration)
+      ./install.sh --install    (Only runs the install step)
+      ./install.sh --config     (Only runs the configuration step)
     "
 }
 
@@ -89,24 +93,33 @@ configure_desktop() {
     echo -e "Creating folders:"
     mkdir -p ~/.local/bin
     mkdir -p ~/Pictures/wallpapers
+    mkdir -p ~/.config
     sleep 0.2
 
-    echo -e "Copying ${MAGENTA}wallpapers${NORMAL}"
-    cp -r configs/wallpapers/${HOST}/* ~/Pictures/wallpapers/
+    echo -e "Linking ${MAGENTA}wallpapers${NORMAL}"
+    # Note: This links the files inside the wallpapers dir, not the dir itself
+    ln -sf "$PWD/configs/${HOST}/wallpapers/"* ~/Pictures/wallpapers/
     sleep 0.2
 
-    echo -e "Copying ${MAGENTA}Xresouces config${NORMAL}"
-    cp configs/${HOST}/Xresources ~/.Xresources
+    echo -e "Linking ${MAGENTA}Xresources config${NORMAL}"
+    ln -sf "$PWD/configs/${HOST}/Xresources" ~/.Xresources
     sleep 0.2
 
-    echo -e "Copying all ${MAGENTA}doom config${NORMAL}"
-    cp -r configs/common/doom/ ~/.config/doom
+    echo -e "Linking all ${MAGenta}doom config${NORMAL}"
+    ln -sf "$PWD/configs/common/doom" ~/.config/doom
     sleep 0.2
 
-    echo -e "Installing ${MAGENTA}doom${NORMAL}"
-    git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
-    ~/.config/emacs/bin/doom install
-    rm -rf ~/emacs.d
+    echo -e "Linking ${MAGENTA}emacs config${NORMAL}"
+    # Assuming this script is run from the repo root that contains 'configs/'
+    ln -sf "$PWD/configs/common/emacs/init.el" "$PWD/configs/common/emacs/early-init.el" ~/.config/emacs/
+    sleep 0.2
+
+    # Conditionally link laptop-specific configs
+    if [ "$HOST" = "laptop" ]; then
+        echo -e "Linking ${MAGENTA}libinput gestures config${NORMAL} for laptop"
+        ln -sf "$PWD/configs/laptop/libinput-gestures.conf" ~/.config/libinput-gestures.conf
+        sleep 0.2
+    fi
 }
 
 reboot() {
@@ -117,17 +130,34 @@ reboot() {
 
 main() {
     init
-
     print_header
 
+    # Check the first command-line argument for mode selection
+    if [[ "$1" == "--config" || "$1" == "-c" ]]; then
+        echo -e "${YELLOW}Running in configuration-only mode...${NORMAL}"
+        get_host
+        configure_desktop
+        echo -e "\n${GREEN}Configuration complete.${NORMAL}"
+        exit 0
+    elif [[ "$1" == "--install" || "$1" == "-i" ]]; then
+        echo -e "${YELLOW}Running in install-only mode...${NORMAL}"
+        get_username
+        set_username
+        get_host
+        install_desktop
+        reboot
+        exit 0
+    fi
+
+    # Default: full installation and configuration flow
+    echo -e "${YELLOW}Running in default (full install) mode...${NORMAL}"
     get_username
     set_username
     get_host
-    
     install_desktop
     configure_desktop
-
     reboot
 }
 
-main && exit 0
+# Pass all script arguments to the main function
+main "$@" && exit 0

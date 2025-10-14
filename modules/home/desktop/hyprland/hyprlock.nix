@@ -17,18 +17,13 @@ in
         vibrancy_darkness = 0.2
     }
 
-    # GENERAL
-    general {
-        no_fade_in = true
-        no_fade_out = true
-        hide_cursor = false
-        grace = 0
-        disable_loading_bar = true
+    animations {
+        enabled = false
     }
 
     # INPUT FIELD
     input-field {
-        monitor = DP-3
+        monitor = DP-2
         size = 250, 60
         outline_thickness = 2
         dots_size = 0.2 # Scale of input-field height, 0.2 - 0.8
@@ -49,7 +44,7 @@ in
 
     # DATE
     label {
-      monitor = DP-3
+      monitor = DP-2
       text = cmd[update:1000] echo "$(date +"%A, %B %d")"
       color = rgba(242, 243, 244, 0.75)
       font_size = 22
@@ -62,7 +57,7 @@ in
     # TIME
     label {
 
-      monitor = DP-3
+      monitor = DP-2
       text = cmd[update:1000] echo "$(date +"%-I:%M")"
       color = rgba(242, 243, 244, 0.75)
       font_size = 95

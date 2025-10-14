@@ -12,11 +12,11 @@
         "hyprctl setcursor Nordzy-cursors 22 &"
         "poweralertd &"
         "waybar &"
-        "swaync &"
-        "swaybg -m fill -o DP-3 -i Pictures/wallpapers/wallpaper.png"
+        "mako &"
+        "hyprpaper &" 
         "emacs --daemon"
-        "hypridle"
         "hyprlock"
+        "hypridle"
       ];
 
       input = {
@@ -202,7 +202,6 @@
         "$mainMod, XF86MonBrightnessUp, exec, brightnessctl set 100%+"
         "$mainMod, XF86MonBrightnessDown, exec, brightnessctl set 100%-"
 
-
       ];
 
       # mouse binding
@@ -210,11 +209,6 @@
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
       ];
-
-      #bindl = [
-      #      ",switch:off:Lid Switch,exec,``hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1.25'"
-      #      ",switch:on:Lid Switch,exec,hyprctl keyword monitor 'eDP-1, disable'"
-      #];
 
       windowrulev2 = [
         # Converted from old windowrule syntax (mostly class matches)
@@ -281,9 +275,9 @@
     };
 
     extraConfig = "
-      monitor=DP-3,3440x1440@165.00,1080x0,1
+      monitor=DP-2,3440x1440@165.00,1080x0,1
       monitor=HDMI-A-1,1920x1080,0x0,1,transform,1
-      monitor=DP-2,1920x1080,4520x0,1,transform,3
+      monitor=DP-1,1920x1080,4520x0,1,transform,3
 
       xwayland {
         force_zero_scaling = true

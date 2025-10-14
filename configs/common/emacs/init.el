@@ -44,7 +44,7 @@
 (setq acm-enable-doc nil)
 
 ;; Line wrapping vs. truncation
-(setq truncate-lines nil) ; This will ensure lines are NOT truncated
+(setq truncate-lines nil)
 
 ;; Appearance settings
 (setq-default cursor-in-non-selected-windows nil)
@@ -71,13 +71,13 @@
   (make-directory (expand-file-name "backups/" user-emacs-directory) t))
 (unless (file-exists-p (expand-file-name "auto-saves/" user-emacs-directory))
   (make-directory (expand-file-name "auto-saves/" user-emacs-directory) t))
+(global-auto-revert-mode 1) ; Automatically reload files changed on disk
 
 ;; UI and Dialogs
 (setq use-dialog-box nil)
 (setq confirm-noninteractive-kill t)
 
 ;; Minibuffer
-;; Close the minibuffer when the mouse leaves it.
 (defun stop-using-minibuffer ()
   (when (and (>= (recursion-depth) 1) (active-minibuffer-window))
     (abort-recursive-edit)))
@@ -88,28 +88,26 @@
 ;; Theme and Modeline
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Dracula Theme
 (use-package doom-themes
   :straight (:host github :repo "doomemacs/themes")
   :config
   (load-theme 'doom-dracula t))
 
-;; Doom Modeline
-(straight-use-package 'doom-modeline)
-(setq doom-modeline-height 1)
-(setq doom-modeline-major-mode-icon t)
-(setq doom-modeline-buffer-file-name-style 'truncate-at-project-dir)
-(setq doom-modeline-buffer-state-icon t)
-(setq doom-modeline-indent-info t)
-(setq doom-modeline-enable-word-count t)
-(setq doom-modeline-time-format "%H:%M")
-(setq doom-modeline-display-debug-info nil)
-(doom-modeline-mode 1)
+(use-package doom-modeline
+  :straight t
+  :config
+  (setq doom-modeline-height 1)
+  (setq doom-modeline-major-mode-icon t)
+  (setq doom-modeline-buffer-file-name-style 'truncate-at-project-dir)
+  (setq doom-modeline-buffer-state-icon t)
+  (setq doom-modeline-indent-info t)
+  (setq doom-modeline-enable-word-count t)
+  (setq doom-modeline-time-format "%H:%M")
+  (setq doom-modeline-display-debug-info nil)
+  (doom-modeline-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; HL Todo
-;;
-;; Highlight todo comments
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package hl-todo
@@ -119,30 +117,43 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Vim Emulation (Evil Mode)
-;;
-;; Evil mode provides Vim keybindings with Doom Emacs style mappings for a consistent experience.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq evil-want-keybinding nil)
-(straight-use-package 'evil)
-(evil-mode 1)
-(evil-set-undo-system 'undo-redo)
-(straight-use-package 'evil-leader)
-(require 'evil-leader)
-(global-evil-leader-mode)
-(with-eval-after-load 'Messages
-  (evil-leader-mode 1)
-  (evil-mode 1))
-(setq evil-leader/leader "<SPC>")
-(evil-leader/set-leader evil-leader/leader)
-(straight-use-package 'evil-collection)
-(evil-collection-init)
+(use-package evil
+  :straight t
+  :config
+  (evil-mode 1)
+  (evil-set-undo-system 'undo-redo))
+
+(use-package evil-leader
+  :straight t
+  :config
+  (global-evil-leader-mode)
+  (with-eval-after-load 'Messages
+    (evil-leader-mode 1)
+    (evil-mode 1))
+  (setq evil-leader/leader "<SPC>")
+  (evil-leader/set-leader evil-leader/leader))
+
+(use-package evil-collection
+  :straight t
+  :config
+  (evil-collection-init))
+
 (fset 'evil-visual-update-x-selection 'ignore)
 
 ;; Custom Keybindings
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-0") 'text-scale-adjust)
+
+(defun reload-init-file ()
+  "Reloads the Emacs initialization file (init.el)."
+  (interactive)
+  (load-file user-init-file)
+  (message "init.el reloaded!"))
+
 (evil-leader/set-key
   ;; FILE MANAGEMENT
   "f f" 'find-file
@@ -153,6 +164,7 @@
   "f R" 'rename-file
   "f D" 'delete-file
   "f c" 'clone-buffer
+  "f a" 'format-all-buffer        ;; Format current buffer
   "f Q" 'save-buffers-kill-emacs
   "f q" 'kill-emacs
   ;; BUFFER MANAGEMENT
@@ -216,6 +228,18 @@
   "p d" 'projectile-dired
   "p c" 'projectile-compile
   "p s" 'projectile-save-project-buffers
+  ;; AIDER (EVIL LEADER)
+  "a c" 'aider-chat
+  "a f" 'aider-add-current-file
+  "a d" 'aider-drop-current-file
+  "a r" 'aider-send-region
+  "a i" 'aider-code-change
+  "a t" 'aider-implement-todo
+  "a a" 'aider-run-aider
+  "a D" 'aider-diff
+  "a C" 'aider-commit
+  "a x" 'aider-clear-chat-and-context
+  "a q" 'aider-quit
   ;; LSP-BRIDGE (Revised to use xref commands)
   "x l r" 'lsp-bridge-restart-process
   "x l d" 'xref-find-definitions
@@ -255,14 +279,9 @@
 (evil-define-key 'visual 'global (kbd "C-e") 'end-of-line)
 
 (define-key evil-visual-state-map (kbd ">")
-  (lambda () (interactive) (call-interactively 'evil-shift-right) (evil-normal-state) (evil-visual-restore)))
+            (lambda () (interactive) (call-interactively 'evil-shift-right) (evil-normal-state) (evil-visual-restore)))
 (define-key evil-visual-state-map (kbd "<")
-  (lambda () (interactive) (call-interactively 'evil-shift-left) (evil-normal-state) (evil-visual-restore)))
-(defun reload-init-file ()
-  "Reloads the Emacs initialization file (init.el)."
-  (interactive)
-  (load-file user-init-file)
-  (message "init.el reloaded!"))
+            (lambda () (interactive) (call-interactively 'evil-shift-left) (evil-normal-state) (evil-visual-restore)))
 
 ;; Undo-Fu
 (use-package undo-fu
@@ -274,9 +293,34 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; AI Tools (Aider & Gptel)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun my/ensure-ollama-is-running ()
+  "Check if Ollama server is running, and start it if not."
+  (interactive)
+  (let ((ollama-process (shell-command-to-string "pgrep ollama")))
+    (when (string-empty-p ollama-process)
+      (message "Ollama server not running. Starting it now...")
+      (start-process "ollama-server" nil "ollama" "serve")
+      (sleep-for 0.5)))) ; Give the server a moment to start
+
+;; Advise key functions to run our check first.
+(advice-add #'completion-at-point :before #'my/ensure-ollama-is-running)
+(advice-add #'aider-chat :before #'my/ensure-ollama-is-running)
+
+(use-package aider
+  :straight t
+  :config
+  (setq aider-args `("--config" ,(expand-file-name "~/.aider.conf.yml")))
+  ;; Set a key binding for the transient menu
+  (global-set-key (kbd "C-c a") 'aider-transient-menu)
+  ;; Add aider magit function to magit menu
+  (aider-magit-setup-transients)
+  :hook (aider-chat-mode . corfu-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Completion Framework
-;;
-;; Vertico provides a minimalistic completion UI.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package vertico
@@ -287,48 +331,81 @@
               ("C-<backspace>" . vertico-directory-up)
               ("<backspace>" . delete-backward-char)))
 
-(straight-use-package 'orderless)
-(setq completion-styles '(orderless basic))
-(setq completion-category-defaults nil)
-(setq completion-category-overrides '((file (styles . (partial-completion)))))
+(use-package orderless
+  :straight t
+  :config
+  (setq completion-styles '(orderless basic))
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrides '((file (styles . (partial-completion))))))
 
-(straight-use-package 'marginalia)
-(marginalia-mode)
+(use-package marginalia
+  :straight t
+  :config
+  (marginalia-mode))
 
-(straight-use-package 'consult)
-(setq consult-preview-key nil)
+(use-package consult
+  :straight t
+  :config
+  (setq consult-preview-key nil))
 
-(straight-use-package 'swiper)
-(straight-use-package 'counsel)
-(straight-use-package 'counsel-projectile)
+(use-package swiper
+  :straight t)
+(use-package counsel
+  :straight t)
+(use-package counsel-projectile
+  :straight t)
+
+;; Corfu (Completion In Region) UI
+(use-package corfu
+  :straight t
+  :init
+  (global-corfu-mode)
+  :config
+  (setq corfu-cycle t)
+  (setq corfu-auto nil) ; You requested manual completion
+  (setq corfu-separator ?\s)
+  (setq corfu-quit-at-boundary 'separator)
+  :bind (:map corfu-map
+              ("TAB" . corfu-complete)
+              ("S-TAB" . corfu-complete-previous)))
+
+;; Cape (Completion At Point Extensions) for backends
+(use-package cape
+  :straight t
+  :init
+  ;; Add the correct function from gptel to provide AI completions
+  (add-to-list 'completion-at-point-functions #'gptel-completion-at-point)
+  ;; Add other useful completion backends
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-keyword))
+
+;; Add a manual keybinding to request completions
+(define-key evil-insert-state-map (kbd "C-<SPC>") #'completion-at-point)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Projectile
-;;
-;; This section configures Projectile to find and remember your projects.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package projectile
   :straight t
   :init
-  ;; This ensures Projectile is enabled from the start.
-  ;; You can also use `(projectile-mode)` to enable it for specific modes.
   (projectile-mode +1)
-  ;; This enables persistent caching, which saves the list of known projects
-  ;; so they are available on startup.
   (setq projectile-enable-caching t)
   :config
-  ;; Projectile saves its cache in this file. It's a good idea to know where it is.
   (setq projectile-project-list-file (expand-file-name ".projectile.cache" user-emacs-directory)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Language Server Protocol (LSP)
-;;
-;; LSP-Bridge is a fast LSP client for Emacs.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(straight-use-package 'yasnippet)
-(yas-global-mode 1)
+(use-package yasnippet
+  :straight t
+  :config
+  (yas-global-mode 1))
+
 (use-package lsp-bridge
   :straight '(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
                          :files (:defaults "*.el" "*.py" "acm" "core" "langserver" "multiserver" "resources")
@@ -337,14 +414,12 @@
   (global-lsp-bridge-mode)
   :config
   (setq lsp-bridge-ui-handler 'vertico)
-  (setq lsp-bridge-display-list-in-other-window nil))
-(setq lsp-bridge-enable-with-tramp nil)
+  (setq lsp-bridge-display-list-in-other-window nil)
+  (setq lsp-bridge-enable-with-tramp nil))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Xref and Code Navigation
-;;
-;; LSP (via lsp-bridge) is prioritized, with dumb-jump as a fallback.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package dumb-jump
@@ -363,51 +438,60 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Version Control
-;;
-;; Magit is the best Git client for Emacs.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(straight-use-package 'magit)
+(use-package magit
+  :straight t)
 
-;; Git-Gutter
-(straight-use-package 'git-gutter)
-(require 'git-gutter)
-(straight-use-package 'git-gutter-fringe)
-(require 'git-gutter-fringe)
-(define-fringe-bitmap 'git-gutter-fr:added    [224] nil nil '(center repeated))
-(define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
-(define-fringe-bitmap 'git-gutter-fr:deleted  [128 192 224 240] nil nil 'bottom)
-(global-git-gutter-mode t)
-(setq git-gutter:update-interval 0.02)
+(use-package git-gutter
+  :straight t
+  :config
+  (global-git-gutter-mode t)
+  (setq git-gutter:update-interval 0.02))
 
+(use-package git-gutter-fringe
+  :straight t
+  :config
+  (define-fringe-bitmap 'git-gutter-fr:added    [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:deleted  [128 192 224 240] nil nil 'bottom))
+
+(defun my/disable-modes-in-tramp ()
+  "Disable modes in remote TRAMP buffers."
+  (when (file-remote-p default-directory)
+    (git-gutter-mode -1)))
+
+(add-hook 'find-file-hook #'my/disable-modes-in-tramp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Code Quality and Formatting
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Apheleia (Code Formatting Framework)
-(straight-use-package 'apheleia)
-(require 'apheleia)
-(straight-use-package 'format-all)
-(require 'format-all)
+(use-package apheleia
+  :straight t
+  :config
+  (apheleia-global-mode +1))
 
-;; Flycheck (On-the-fly syntax checking)
-(straight-use-package 'flycheck)
-(global-flycheck-mode 1)
-(setq flycheck-highlighting-mode 'lines)
-(setq flycheck-display-errors-delay 0.5)
-(setq flycheck-check-syntax-automatically '(mode-enable save new-line))
-(setq flycheck-indication-mode 'right-fringe)
+(use-package format-all
+  :straight t)
 
-;; Flyspell (Spell Checking)
-(straight-use-package 'flyspell)
+(use-package flycheck
+  :straight t
+  :config
+  (global-flycheck-mode 1)
+  (setq flycheck-highlighting-mode 'lines)
+  (setq flycheck-display-errors-delay 0.5)
+  (setq flycheck-check-syntax-automatically '(mode-enable save new-line))
+  (setq flycheck-indication-mode 'right-fringe))
+
+(use-package flyspell
+  :straight t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Shell and Terminals
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Vterm (Emacs terminal emulator)
 (use-package vterm
   :commands vterm
   :config
@@ -418,36 +502,79 @@
 (add-hook 'vterm-mode-hook (lambda () (display-line-numbers-mode -1)))
 (add-hook 'vterm-mode-hook (lambda () (setq-local buffer-face-mode-face '(:height 100))))
 
-;; Direnv (Environment Variable Management)
-(straight-use-package 'direnv)
-(direnv-mode)
-(setq direnv-always-show-log nil)
-(setq direnv-always-show-summary nil)
+(use-package direnv
+  :straight t
+  :config
+  (direnv-mode)
+  (setq direnv-always-show-log nil)
+  (setq direnv-always-show-summary nil))
 
-;; Docker Integration
-(straight-use-package 'docker)
-(straight-use-package 'dockerfile-mode)
-(straight-use-package 'docker-compose-mode)
+(use-package docker
+  :straight t)
+(use-package dockerfile-mode
+  :straight t)
+(use-package docker-compose-mode
+  :straight t)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org Sync
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun org-git-pull ()
+  "Pull updates for the git repo, but only if online."
+  (interactive)
+  (let ((org-path (expand-file-name org-directory)))
+    (if (and buffer-file-name (string-prefix-p org-path (file-name-directory (buffer-file-name))))
+        (let* ((repo-root (locate-dominating-file default-directory ".git"))
+               (default-directory repo-root)
+               (pull-command "if ping -c 1 -W 1 github.com &>/dev/null; then git pull --ff-only; else echo 'Offline. Skipping pull.'; fi"))
+          (message "Checking connection...")
+          (let ((output (shell-command-to-string pull-command)))
+            (message "%s" (string-trim output))))
+      (message "Not a file in your org-directory."))))
+
+(defun org-git-sync ()
+  "Sync (commit and push) the git repo if the current file is in 'org-directory'."
+  (interactive)
+  (let ((org-path (expand-file-name org-directory)))
+    (if (and buffer-file-name (string-prefix-p org-path (file-name-directory (buffer-file-name))))
+        (let* ((repo-root (locate-dominating-file default-directory ".git"))
+               (default-directory repo-root))
+          (shell-command "git add -A")
+          (if (= 1 (call-process "git" nil nil nil "diff" "--cached" "--quiet"))
+              (progn
+                (shell-command (format "git commit -m \"Sync: %s\""
+                                       (file-name-nondirectory buffer-file-name)))
+                (message "Local commit successful. Pushing to remote...")
+                (let ((exit-code (call-process "git" nil nil nil "push")))
+                  (if (zerop exit-code)
+                      (message "Org repo synced successfully!")
+                    (message "Push failed. (Are you offline?) Commits are saved locally."))))
+            (message "No changes to commit.")))
+      (message "Not a file in your org-directory."))))
+
+(evil-leader/set-key-for-mode 'org-mode
+  "o p" 'org-git-pull
+  "o s" 'org-git-sync)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Other Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; PDF Tools
 (use-package pdf-tools
   :straight t
   :config
-  (pdf-loader-install)
+  (pdf-tools-install)
   :hook (pdf-view-mode . (lambda () (display-line-numbers-mode -1))))
 
-;; Recentf (Recent Files)
-(setq recentf-max-menu-items 25)
-(setq recentf-max-saved-items 250)
-(setq recentf-save-file (expand-file-name "recentf" user-emacs-directory))
-(recentf-mode 1)
+(use-package recentf
+  :config
+  (setq recentf-max-menu-items 25)
+  (setq recentf-max-saved-items 250)
+  (setq recentf-save-file (expand-file-name "recentf" user-emacs-directory))
+  (recentf-mode 1))
 
-;; Clipboard Integration
 (setq x-select-enable-clipboard t)
 (setq x-select-enable-primary t)
 (if (display-graphic-p)
@@ -457,12 +584,14 @@
       (setq interprogram-paste-last-comment t)
       (setq gui-set-selection-tool 'x-clipboard-mode)))
 
-;; Keybinding Discovery (which-key)
-(which-key-mode 1)
-(setq which-key-idle-delay 0.2)
-(setq which-key-popup-type 'side-window)
-(setq which-key-side-window-location 'bottom)
-(setq which-key-sort-order 'which-key-description-order)
+(use-package which-key
+  :straight t
+  :config
+  (which-key-mode 1)
+  (setq which-key-idle-delay 0.2)
+  (setq which-key-popup-type 'side-window)
+  (setq which-key-side-window-location 'bottom)
+  (setq which-key-sort-order 'which-key-description-order))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -470,28 +599,36 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Python
-(straight-use-package 'python-mode)
+(use-package python-mode
+  :straight t)
 
 ;; web
-(straight-use-package 'web-mode)
+(use-package web-mode
+  :straight t)
 
 ;; config stuff
-(straight-use-package 'json-mode)
-(straight-use-package 'yaml-mode)
+(use-package json-mode
+  :straight t)
+(use-package yaml-mode
+  :straight t)
 
 ;; LaTeX
-(straight-use-package 'auctex)
-(setq TeX-auto-save t)
-(setq TeX-parse-self t)
-(setq TeX-master t)
-(add-hook 'LaTeX-mode-hook 'visual-line-mode)
-(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-(setq reftex-plug-into-AUCTeX t)
+(use-package auctex
+  :straight t
+  :config
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq TeX-master t)
+  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq reftex-plug-into-AUCTeX t))
 
 ;; Nix
-(straight-use-package 'nix-mode)
-(add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
+(use-package nix-mode
+  :straight t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode)))
 
 ;; Erlang
 (use-package erlang
@@ -500,25 +637,29 @@
          ("\\.hrl\\'" . erlang-mode)))
 
 ;; Org Mode
-(straight-use-package 'org)
-(straight-use-package 'evil-org)
-(setq org-directory "~/org/")
-(defvar my-org-template-file (expand-file-name "templates/org-template.org" user-emacs-directory))
-(require 'skeleton)
-(define-skeleton my-org-file-frontmatter
-  "Front matter for new org files with dynamic content and prompts."
-  ""
-  "#+TITLE: " (file-name-sans-extension (file-name-nondirectory buffer-file-name)) "\n"
-  "#+DATE: <" (format-time-string "%Y-%m-%d %a %H:%M") ">\n"
-  "#+TAGS:" "\n"
-  "\n")
-(add-to-list 'auto-insert-alist '("\\.org\\'" . my-org-file-frontmatter))
-(setq org-return-follows-link t)
-(add-hook 'org-mode-hook (lambda () (electric-indent-local-mode -1)))
-(add-hook 'org-mode-hook (lambda () (electric-pair-local-mode -1)))
-(add-hook 'org-mode-hook 'evil-org-mode)
-(setq evil-org-ret-behavior 'org-return)
+(use-package org
+  :straight t
+  :config
+  (setq org-directory "~/org/")
+  (defvar my-org-template-file (expand-file-name "templates/org-template.org" user-emacs-directory))
+  (require 'skeleton)
+  (define-skeleton my-org-file-frontmatter
+    "Front matter for new org files with dynamic content and prompts."
+    ""
+    "#+TITLE: " (file-name-sans-extension (file-name-nondirectory buffer-file-name)) "\n"
+    "#+DATE: <" (format-time-string "%Y-%m-%d %a %H:%M") ">\n"
+    "#+TAGS:" "\n"
+    "\n")
+  (add-to-list 'auto-insert-alist '("\\.org\\'" . my-org-file-frontmatter))
+  (setq org-return-follows-link t)
+  (add-hook 'org-mode-hook (lambda () (electric-indent-local-mode -1)))
+  (add-hook 'org-mode-hook (lambda () (electric-pair-local-mode -1))))
+
+(use-package evil-org
+  :straight t
+  :config
+  (add-hook 'org-mode-hook 'evil-org-mode)
+  (setq evil-org-ret-behavior 'org-return))
 
 ;; ROS Launch
 (add-to-list 'auto-mode-alist '("\\.launch\\'" . nxml-mode))
-

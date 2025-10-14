@@ -1,17 +1,15 @@
-{ ... }:
-let custom = {
+{...}: let
+  custom = {
     font = "JetBrainsMono Nerd Font";
     font_size = "20px";
     font_weight = "bold";
     text_color = "#cdd6f4";
-    secondary_accent= "89b4fa";
+    secondary_accent = "89b4fa";
     tertiary_accent = "f5f5f5";
     background = "11111";
-};
-in 
-{
+  };
+in {
   programs.waybar.style = ''
-
     * {
         border: none;
         border-radius: 0px;
@@ -28,7 +26,6 @@ in
         transition-property: background-color;
         transition-duration: .5s;
     }
-
 
     #custom-sep,
     #custom-left-arrow,
@@ -48,23 +45,29 @@ in
     #disk,
     #network,
     #custom-notification,
-    #tray {
+    #tray,
+    /* Added these to fix transparent background */
+    #custom-screenshot,
+    #custom-settings,
+    #custom-power {
         background: #1a1a1a;
     }
 
     #workspaces {
         font-size: 18px;
         padding-left: 15px;
-        
     }
+
     #workspaces button {
         color: ${custom.text_color};
-        padding-left:  6px;
+        padding-left: 6px;
         padding-right: 6px;
     }
+
     #workspaces button.empty {
         color: #6c7086;
     }
+
     #workspaces button.active {
         color: #b4befe;
     }
@@ -77,7 +80,11 @@ in
     #network,
     #tray,
     #custom-notification,
-    #disk {
+    #disk,
+    /* Added these for consistent padding */
+    #custom-screenshot,
+    #custom-settings,
+    #custom-power {
         padding: 0 10px;
     }
   '';

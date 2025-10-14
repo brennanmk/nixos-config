@@ -35,8 +35,10 @@
     obs-studio
     bitwarden
     sqlite
-    super-slicer
+    prusa-slicer
+    discord
     vesktop
+    webcord
     obs-studio
 
     nodejs
@@ -46,14 +48,19 @@
 
     #image writing
     caligula
-    quickemu
+
+    # LLM magic
+    ollama
+    aider-chat
+
+    unityhub
 
     #system utils
     bluetuith
     pulsemixer
     pavucontrol
     wdisplays
-    nautilus
+    nemo
 
     inotify-tools
     nvidia-container-toolkit
@@ -67,7 +74,6 @@
 
     #xfce
     blueberry
-    devcontainer
 
     # python
     pkgs.python3

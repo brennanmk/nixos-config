@@ -2,9 +2,10 @@
 {
   imports = [
     ./hyprland.nix
-    ./config.nix
-    ./hyprlock.nix
     ./hypridle.nix
+    ./hyprlock.nix
+    ./hyprpaper.nix
+    ./config.nix
     ./variables.nix
   ];
 }
