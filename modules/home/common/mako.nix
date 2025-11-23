@@ -30,8 +30,9 @@
 
       "urgency=critical" = {
         "border-color" = "#b7bdf8";
-        "default-timeout" = 0;
+        "default-timeout" = 15000;
       };
     };
   };
 }
+ 

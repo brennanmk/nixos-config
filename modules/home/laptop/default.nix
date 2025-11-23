@@ -4,6 +4,5 @@
     ./waybar
     ./packages.nix
     ./zsh.nix
-    ./swaync/swaync.nix
   ];
 }

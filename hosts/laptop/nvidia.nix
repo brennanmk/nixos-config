@@ -7,7 +7,10 @@ in
     services.xserver.enable = true;
     services.xserver.videoDrivers = ["nvidia"];
     boot.kernelModules = [ "amdgpu" ];
-    boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
+    boot.kernelParams = [
+        "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+        "nvidia_drm.modeset=1" 
+    ];
     hardware = {
         nvidia = {
             package = config.boot.kernelPackages.nvidiaPackages.beta;

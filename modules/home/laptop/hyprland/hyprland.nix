@@ -1,11 +1,8 @@
 { inputs, pkgs, ...}: 
 {
   home.packages = with pkgs; [
-    # swww
     swaybg
-    inputs.hypr-contrib.packages.${pkgs.system}.grimblast
-    grim
-    slurp
+    hyprshot
     wl-clipboard
     wl-clip-persist
     wf-recorder

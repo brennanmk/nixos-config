@@ -10,12 +10,13 @@
     ripgrep                           # grep replacement
     soundwireserver                   # pass audio to android phone
     teams-for-linux
-
+    gimp
     # C / C++
     gcc
     gnumake
     cmake
     libtool
+    lazysql
 
     # general appliactions
     firefox
@@ -90,7 +91,13 @@
     pkgs.python3Packages.packaging
     pyright
     ruff
-    aspell
+
+    (aspellWithDicts (dicts: with dicts; [ 
+        en 
+        en-computers 
+        en-science 
+        ]))
+    
     jdt-language-server
     marksman
     nil

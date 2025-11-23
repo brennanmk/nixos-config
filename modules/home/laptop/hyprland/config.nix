@@ -35,9 +35,8 @@
         layout = "dwindle";
         gaps_in = 2;
         gaps_out = 4;
-        border_size = 1;
+        border_size = 2;
         "col.active_border" = "rgb(cba6f7)";
-        "col.inactive_border" = "0x00000000";
         no_border_on_floating = false;
       };
 
@@ -126,6 +125,7 @@
         "ALT, Return, exec, kitty --title float_kitty"
         "$mainMod SHIFT, Return, exec, kitty --start-as=fullscreen -o 'font_size=16'"
         "$mainMod, Q, killactive,"
+        "$mainMod, S, exec, wofi_firefox"
         "$mainMod, F, fullscreen, 0"
         "$mainMod SHIFT, F, fullscreen, 1"
         "$mainMod, Space, togglefloating,"
@@ -135,10 +135,6 @@
         "$mainMod, J, togglesplit,"
         "$mainMod, E, exec, nemo"
         "$mainMod SHIFT, B, exec, pkill -SIGUSR1 .waybar-wrapped"
-
-        # screenshot
-        "$mainMod, Print, exec, grimblast --notify --cursor --freeze save area ~/Pictures/$(date +'%Y-%m-%d-At-%Ih%Mm%Ss').png"
-        ",Print, exec, grimblast --notify --cursor --freeze copy area"
 
         # switch focus
         "$mainMod, left, movefocus, l"
@@ -209,11 +205,6 @@
       bindm = [
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
-      ];
-
-      bindl = [
-           ",switch:off:Lid Switch,exec,``hyprctl keyword monitor 'eDP-1, 2560x1600, 0x0, 1.25'"
-           ",switch:on:Lid Switch,exec,hyprctl keyword monitor 'eDP-1, disable'"
       ];
 
       windowrulev2 = [

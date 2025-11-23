@@ -468,9 +468,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package apheleia
-  :straight t
-  :config
-  (apheleia-global-mode +1))
+  :straight t)
 
 (use-package format-all
   :straight t)
@@ -484,9 +482,33 @@
   (setq flycheck-check-syntax-automatically '(mode-enable save new-line))
   (setq flycheck-indication-mode 'right-fringe))
 
-(use-package flyspell
-  :straight t)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Spell Checking (Aspell)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(use-package flyspell
+  :straight t
+  :config
+  ;; Set Aspell as the spell checker
+  (setq ispell-program-name "aspell")
+
+  ;; Performance and dictionary settings
+  (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together"))
+
+  ;; Make Flyspell faster by not checking while you are typing fast
+  (setq flyspell-issue-message-flag nil)
+
+  ;; Bindings for correcting words
+  (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-wrapper)
+
+  ;; Hooks
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode))
+
+(use-package flyspell-correct
+  :straight t
+  :after flyspell
+  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Shell and Terminals

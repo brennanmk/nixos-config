@@ -3,7 +3,6 @@
   programs.waybar.settings.mainBar = {
     position = "top";
     layer = "top";
-    output = "DP-2";
     height = 25;
     modules-left = [
       "hyprland/workspaces"
@@ -113,23 +112,26 @@
         "tooltip"= false;
     };
 
-    "custom/power" = {
+"custom/power" = {
       format = "";
-      tooltip = "Power Menu";
+      tooltip = true;
+      tooltip-format = "Power Menu";
       on-click = "wofi_power";
       escape = true;
     };
 
     "custom/screenshot" = {
       format = "󰹑";
-      tooltip = "Screenshot Menu";
+      tooltip = true;
+      tooltip-format = "Screenshot Menu";
       on-click = "wofi_screenshot";
       escape = true;
     };
 
     "custom/settings" = {
       format = "";
-      tooltip = "Launch Settings Menu";
+      tooltip = true;
+      tooltip-format = "Settings Menu";
       on-click = "wofi_settings";
       escape = true;
     };
