@@ -3,6 +3,7 @@
   # imports = [ inputs.nix-gaming.nixosModules.default ];
   nix = {
     settings = {
+      download-buffer-size = 536870912;
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" ];
       substituters = [ "https://nix-gaming.cachix.org" ];

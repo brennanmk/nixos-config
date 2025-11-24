@@ -34,7 +34,7 @@
     polybar
     htop
     obs-studio
-    bitwarden
+    bitwarden-desktop
     sqlite
     prusa-slicer
     discord
@@ -104,7 +104,7 @@
     docker-compose
     yaml-language-server
     lemminx
-    dockerfile-language-server-nodejs
+    dockerfile-language-server
     docker-compose-language-service
     zlib
     psmisc

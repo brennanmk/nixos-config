@@ -1,18 +1,16 @@
 { username, pkgs, ... }:
 {
   services = {
-    # Existing services
-    logind.lidSwitch = "ignore";
+    # Power management
+    logind.settings.Login.HandleLidSwitch = "ignore";
+
+    # System services
     gvfs.enable = true;
-    gnome.gnome-keyring.enable = false;
     dbus.enable = true;
     fstrim.enable = true;
     printing.enable = true;
-    displayManager.autoLogin = {
-      enable = true;
-      user = "${username}";
-    };
 
+    # Network Discovery & VPN
     zerotierone = {
       enable = true;
       joinNetworks = [
@@ -26,11 +24,23 @@
       openFirewall = true;
     };
 
+    # AI / LLM
     ollama = {
       enable = true;
       acceleration = "cuda";
     };
+
+    # Display Manager & Auto-Login
+    displayManager = {
+      sddm = {
+        enable = true;
+        wayland.enable = true;
+      };
+      
+      autoLogin = {
+        enable = true;
+        user = "${username}";
+      };
+    };
   };
-
 }
-

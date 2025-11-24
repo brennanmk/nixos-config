@@ -586,9 +586,15 @@
 
 (use-package pdf-tools
   :straight t
+  :mode ("\\.pdf\\'" . pdf-view-mode) ;; Bind .pdf to the viewer immediately
+  :init
+  (add-to-list 'file-coding-system-alist '("\\.pdf\\'" . no-conversion))
   :config
-  (pdf-tools-install)
-  :hook (pdf-view-mode . (lambda () (display-line-numbers-mode -1))))
+  (pdf-tools-install :no-query)
+  ;; UPDATED HOOK: Disables line numbers AND git-gutter
+  :hook (pdf-view-mode . (lambda () 
+                           (display-line-numbers-mode -1)
+                           (git-gutter-mode -1))))
 
 (use-package recentf
   :config

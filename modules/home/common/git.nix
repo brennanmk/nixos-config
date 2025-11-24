@@ -3,10 +3,10 @@
   programs.git = {
     enable = true;
     
-    userName = "brennanmk";
-    userEmail = "brennanmk2200@gmail.com";
+    settings.user.name = "brennanmk";
+    settings.user.email = "brennanmk2200@gmail.com";
     
-    extraConfig = { 
+    settings = { 
       credential.helper = "";
     };
   };
