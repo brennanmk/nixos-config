@@ -1,9 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Package Management
-;;
-;; straight.el is a package manager for Emacs that allows
-;; for declarative package management and building packages
-;; directly from their Git repositories.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; straight.el bootstrap
@@ -23,15 +19,16 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+;; FIX: Prevent "Feature provided by different file" error for project.el
+(add-to-list 'straight-built-in-pseudo-packages 'project)
+
 ;; Install use-package
 (straight-use-package 'use-package)
-(setq straight-use-package-by-default t) ;; Make all use-package calls use straight.el
+(setq straight-use-package-by-default t) 
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; General Emacs Settings
-;;
-;; Basic settings for better usability and a more modern feel.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Keep windows balanced
@@ -41,7 +38,9 @@
 
 ;; Performance optimizations
 (setq gc-cons-threshold 500000000) ; 100 MB
-(setq acm-enable-doc nil)
+
+;; ignore warnings
+(setq native-comp-async-report-warnings-errors 'silent)
 
 ;; Line wrapping vs. truncation
 (setq truncate-lines nil)
@@ -118,6 +117,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Vim Emulation (Evil Mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq evil-want-C-u-scroll t)
 
 (setq evil-want-keybinding nil)
 (use-package evil
@@ -148,15 +148,22 @@
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-0") 'text-scale-adjust)
 
-(defun reload-init-file ()
-  "Reloads the Emacs initialization file (init.el)."
+(use-package restart-emacs
+  :straight t
+  :config
+  (setq restart-emacs-restore-frames t))
+
+(defun my/find-file-tramp ()
+  "Open find-file with the TRAMP prefix pre-filled."
   (interactive)
-  (load-file user-init-file)
-  (message "init.el reloaded!"))
+  (minibuffer-with-setup-hook
+      (lambda () (insert "/sftp:"))
+    (call-interactively 'find-file)))
 
 (evil-leader/set-key
-  ;; FILE MANAGEMENT
+;; --- FILE MANAGEMENT ---
   "f f" 'find-file
+  "f t" 'my/find-file-tramp
   "f d" 'dired
   "f s" 'save-buffer
   "f w" 'write-file
@@ -164,10 +171,12 @@
   "f R" 'rename-file
   "f D" 'delete-file
   "f c" 'clone-buffer
-  "f a" 'format-all-buffer        ;; Format current buffer
+  "f a" 'format-all-buffer
   "f Q" 'save-buffers-kill-emacs
   "f q" 'kill-emacs
-  ;; BUFFER MANAGEMENT
+  "f n" 'my/open-in-nemo 
+
+  ;; --- BUFFER MANAGEMENT ---
   "b b" 'consult-buffer
   "b k" 'kill-buffer
   "b K" 'kill-some-buffers
@@ -175,32 +184,37 @@
   "b p" 'previous-buffer
   "b r" 'revert-buffer
   "b l" 'list-buffers
-  ;; WINDOW MANAGEMENT (FRAMES/SPLITS)
-  "w /" 'split-window-right
-  "w -" 'split-window-below
-  "w v" 'split-window-right
-  "w s" 'split-window-below
-  "w c" 'delete-window
-  "w o" 'delete-other-windows
-  "w h" 'windmove-left
-  "w l" 'windmove-right
-  "w k" 'windmove-up
-  "w j" 'windmove-down
-  "w r" 'rotate-window
-  "w =" 'balance-windows
-  "w m" 'maximize-window
-  "w M" 'restore-window-configuration
-  "<left>" 'windmove-left
-  "<right>" 'windmove-right
-  "<up>" 'windmove-up
-  "<down>" 'windmove-down
-  ;; SEARCH & REPLACE
+
+  ;; --- WINDOW MANAGEMENT ---
+  "w /"       'split-window-right
+  "w -"       'split-window-below
+  "w v"       'split-window-right
+  "w s"       'split-window-below
+  "w c"       'delete-window
+  "w o"       'delete-other-windows
+  "w ="       'balance-windows
+  "w m"       'maximize-window
+  "<left>"    'windmove-left
+  "<right>"   'windmove-right
+  "<up>"      'windmove-up
+  "<down>"    'windmove-down
+  "w h"       'buf-move-left
+  "w j"       'buf-move-down
+  "w k"       'buf-move-up
+  "w l"       'buf-move-right
+  "w <left>"  'buf-move-left
+  "w <right>" 'buf-move-right
+  "w <up>"    'buf-move-up
+  "w <down>"  'buf-move-down
+
+  ;; --- SEARCH & REPLACE ---
   "s s" 'swiper
   "s r" 'query-replace
   "s R" 'query-replace-regexp
   "s f" 'counsel-rg
   "s p" 'counsel-projectile-grep
-  ;; GIT (MAGIT)
+
+  ;; --- GIT (MAGIT) ---
   "g s" 'magit-status
   "g f" 'magit-fetch
   "g p" 'magit-pull
@@ -209,17 +223,19 @@
   "g b" 'magit-branch
   "g B" 'magit-blame
   "g l" 'magit-log
-  ;; PDF NOTER
-  "p n" 'pdf-noter-add-note-at-point
-  "p h" 'pdf-noter-highlight-region
-  "p u" 'pdf-noter-unannotate-region
-  "p l" 'pdf-noter-list-notes
-  "p j" 'pdf-noter-goto-next-note
-  "p k" 'pdf-noter-goto-previous-note
-  "p d" 'pdf-noter-delete-note
-  "p r" 'pdf-noter-reparse-notes
-  "p s" 'pdf-noter-sync-notes
-  ;; PROJECTILE
+
+  ;; --- PDF NOTER ---
+  "n n" 'pdf-noter-add-note-at-point
+  "n h" 'pdf-noter-highlight-region
+  "n u" 'pdf-noter-unannotate-region
+  "n l" 'pdf-noter-list-notes
+  "n j" 'pdf-noter-goto-next-note
+  "n k" 'pdf-noter-goto-previous-note
+  "n d" 'pdf-noter-delete-note
+  "n r" 'pdf-noter-reparse-notes
+  "n s" 'pdf-noter-sync-notes
+
+  ;; --- PROJECTILE ---
   "p f" 'projectile-find-file
   "p g" 'consult-ripgrep
   "p b" 'projectile-switch-to-buffer
@@ -228,7 +244,8 @@
   "p d" 'projectile-dired
   "p c" 'projectile-compile
   "p s" 'projectile-save-project-buffers
-  ;; AIDER (EVIL LEADER)
+
+  ;; --- AIDER ---
   "a c" 'aider-chat
   "a f" 'aider-add-current-file
   "a d" 'aider-drop-current-file
@@ -240,20 +257,18 @@
   "a C" 'aider-commit
   "a x" 'aider-clear-chat-and-context
   "a q" 'aider-quit
-  ;; LSP-BRIDGE (Revised to use xref commands)
-  "x l r" 'lsp-bridge-restart-process
-  "x l d" 'xref-find-definitions
-  "x l R" 'lsp-bridge-rename
-  "x l h" 'xref-find-references
-  "x l i" 'lsp-bridge-find-implementation
-  "x l t" 'lsp-bridge-find-type-definition
-  "x l a" 'lsp-bridge-code-action
-  "x l o" 'lsp-bridge-toggle-diagnostics-in-minibuffer
-  "x l f" 'lsp-bridge-format-buffer
-  "c r" 'lsp-bridge-rename
+
+  ;; --- LSP (EGLOT) ---
+  "c r" 'eglot-rename
+  "c a" 'eglot-code-actions
+  "c f" 'eglot-format
   "c d" 'xref-find-definitions
   "c D" 'xref-find-references
-  ;; Flycheck
+  "c i" 'eglot-find-implementation
+  "c t" 'eglot-find-typeDefinition
+  "c R" 'eglot-reconnect
+
+  ;; --- FLYCHECK ---
   "e l" 'flycheck-list-errors
   "e n" 'flycheck-next-error
   "e p" 'flycheck-previous-error
@@ -261,16 +276,19 @@
   "e d" 'flycheck-describe-checker
   "e a" 'flycheck-disable-checker
   "e e" 'flycheck-buffer
-  ;; ORG MODE
+  "e h" 'flyspell-correct-at-point
+
+  ;; --- ORG MODE ---
   "o a" 'org-agenda
   "o c" 'org-capture
   "o l" 'org-store-link
   "o b" 'org-iswitchb
-  ;; GENERAL UTILITIES
+
+  ;; --- GENERAL UTILITIES ---
   "x e" 'eval-buffer
   "x E" 'eval-last-sexp
-  "x r" 'reload-init-file
-  "x v" 'view-emacs-init-file)
+  "x r" 'restart-emacs
+)
 
 (evil-leader/set-key "<SPC>" 'projectile-find-file)
 (evil-define-key 'insert 'global (kbd "C-a") 'beginning-of-line)
@@ -291,6 +309,27 @@
   :config
   (undo-fu-session-global-mode))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Tramp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(connection-local-set-profile-variables
+ 'remote-config-profile
+ '((tramp-direct-async-process . t)
+   (python-shell-interpreter . "python3")
+   (python-shell-interpreter-args . "-i"))) 
+
+(connection-local-set-profiles
+ '(:application tramp :protocol "sftp")
+ 'remote-config-profile)
+
+(setq tramp-use-ssh-controlmaster-options nil)
+(setq tramp-default-method "sftp")
+(setq magit-tramp-pipe-stty-settings 'pty)
+
+(with-eval-after-load 'tramp
+  (with-eval-after-load 'compile
+    (remove-hook 'compilation-mode-hook #'tramp-compile-disable-ssh-controlmaster-options)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; AI Tools (Aider & Gptel)
@@ -313,11 +352,8 @@
   :straight t
   :config
   (setq aider-args `("--config" ,(expand-file-name "~/.aider.conf.yml")))
-  ;; Set a key binding for the transient menu
   (global-set-key (kbd "C-c a") 'aider-transient-menu)
-  ;; Add aider magit function to magit menu
-  (aider-magit-setup-transients)
-  :hook (aider-chat-mode . corfu-mode))
+  (aider-magit-setup-transients))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Completion Framework
@@ -343,46 +379,12 @@
   :config
   (marginalia-mode))
 
-(use-package consult
-  :straight t
-  :config
-  (setq consult-preview-key nil))
-
 (use-package swiper
   :straight t)
 (use-package counsel
   :straight t)
 (use-package counsel-projectile
   :straight t)
-
-;; Corfu (Completion In Region) UI
-(use-package corfu
-  :straight t
-  :init
-  (global-corfu-mode)
-  :config
-  (setq corfu-cycle t)
-  (setq corfu-auto nil) ; You requested manual completion
-  (setq corfu-separator ?\s)
-  (setq corfu-quit-at-boundary 'separator)
-  :bind (:map corfu-map
-              ("TAB" . corfu-complete)
-              ("S-TAB" . corfu-complete-previous)))
-
-;; Cape (Completion At Point Extensions) for backends
-(use-package cape
-  :straight t
-  :init
-  ;; Add the correct function from gptel to provide AI completions
-  (add-to-list 'completion-at-point-functions #'gptel-completion-at-point)
-  ;; Add other useful completion backends
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-keyword))
-
-;; Add a manual keybinding to request completions
-(define-key evil-insert-state-map (kbd "C-<SPC>") #'completion-at-point)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Projectile
@@ -398,34 +400,84 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Language Server Protocol (LSP)
+;; LSP (Eglot) - Native Emacs Client
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package corfu
+  :straight t
+  :init
+  (global-corfu-mode)
+  (corfu-popupinfo-mode) ;; Enable the doc popup system
+
+  :config
+  (setq corfu-auto t)
+  (setq corfu-auto-delay 0.0)
+  (setq corfu-auto-prefix 1)
+  (setq corfu-cycle t)
+  (setq corfu-preselect 'first)
+  
+  ;; Docs are manual (hidden by default)
+  (setq corfu-popupinfo-delay nil)
+  (setq corfu-popupinfo-max-height 20)
+
+  ;; Prevent Minibuffer Conflicts
+  (defun corfu-enable-in-minibuffer ()
+    (when (where-is-internal #'completion-at-point (list (current-local-map)))
+      (corfu-mode 1)))
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
+
+  :bind (:map corfu-map
+              ;; TAB = Select/Insert
+              ("TAB" . corfu-insert)
+              ([tab] . corfu-insert)
+              
+              ;; Shift + Tab = Toggle Documentation
+              ("S-TAB" . corfu-popupinfo-toggle)
+              ([backtab] . corfu-popupinfo-toggle)
+
+              ;; Shift + Arrows = Scroll Documentation
+              ("S-<up>" . corfu-popupinfo-scroll-down) 
+              ("S-<down>" . corfu-popupinfo-scroll-up)))
 
 (use-package yasnippet
   :straight t
   :config
   (yas-global-mode 1))
 
-(use-package lsp-bridge
-  :straight '(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
-                         :files (:defaults "*.el" "*.py" "acm" "core" "langserver" "multiserver" "resources")
-                         :build (:not compile))
+(use-package eglot
+  :ensure nil ;; Built-in to Emacs 29+
   :init
-  (global-lsp-bridge-mode)
+  (defun my/eglot-ensure-if-local ()
+    "Start Eglot only if the buffer is not on a remote system (TRAMP)."
+    (unless (file-remote-p (or (buffer-file-name) default-directory))
+      (eglot-ensure)))
+  :hook ((python-mode . my/eglot-ensure-if-local)
+         (rust-mode . my/eglot-ensure-if-local)
+         (nix-mode . my/eglot-ensure-if-local)
+         (c-mode . my/eglot-ensure-if-local)
+         (c++-mode . my/eglot-ensure-if-local))
   :config
-  (setq lsp-bridge-ui-handler 'vertico)
-  (setq lsp-bridge-display-list-in-other-window nil)
-  (setq lsp-bridge-enable-with-tramp nil))
-
+  (setq eglot-events-buffer-size 0)
+  (setq eglot-autoshutdown t)
+  (setq completion-cycle-threshold nil)
+  
+  (define-key eglot-mode-map (kbd "<backtab>") #'completion-at-point))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Xref and Code Navigation
+;; Route Completions to Vertico
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package dumb-jump
+(use-package consult
   :straight t
-  :init
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+  :config
+  (setq consult-preview-key nil)
+  ;; This forces completions into the Vertico minibuffer
+  (setq completion-in-region-function #'consult-completion-in-region))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Xref (Native Code Navigation)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (setq xref-prompt-for-identifier
       '(not xref-find-definitions
             xref-find-definitions-other-window
@@ -433,8 +485,9 @@
             xref-find-references
             xref-find-references-other-window
             xref-find-references-other-frame))
-(setq xref-show-xrefs-function #'consult-xref)
 
+(setq xref-show-xrefs-function #'consult-xref)
+(setq xref-show-definitions-function #'consult-xref)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Version Control
@@ -445,8 +498,8 @@
 
 (use-package git-gutter
   :straight t
+  :hook (prog-mode . git-gutter-mode) ;; Only run in code buffers to prevent errors
   :config
-  (global-git-gutter-mode t)
   (setq git-gutter:update-interval 0.02))
 
 (use-package git-gutter-fringe
@@ -455,13 +508,6 @@
   (define-fringe-bitmap 'git-gutter-fr:added    [224] nil nil '(center repeated))
   (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
   (define-fringe-bitmap 'git-gutter-fr:deleted  [128 192 224 240] nil nil 'bottom))
-
-(defun my/disable-modes-in-tramp ()
-  "Disable modes in remote TRAMP buffers."
-  (when (file-remote-p default-directory)
-    (git-gutter-mode -1)))
-
-(add-hook 'find-file-hook #'my/disable-modes-in-tramp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Code Quality and Formatting
@@ -489,19 +535,10 @@
 (use-package flyspell
   :straight t
   :config
-  ;; Set Aspell as the spell checker
   (setq ispell-program-name "aspell")
-
-  ;; Performance and dictionary settings
   (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together"))
-
-  ;; Make Flyspell faster by not checking while you are typing fast
   (setq flyspell-issue-message-flag nil)
-
-  ;; Bindings for correcting words
   (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-wrapper)
-
-  ;; Hooks
   (add-hook 'text-mode-hook 'flyspell-mode)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode))
 
@@ -537,7 +574,6 @@
   :straight t)
 (use-package docker-compose-mode
   :straight t)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Org Sync
@@ -586,12 +622,11 @@
 
 (use-package pdf-tools
   :straight t
-  :mode ("\\.pdf\\'" . pdf-view-mode) ;; Bind .pdf to the viewer immediately
+  :mode ("\\.pdf\\'" . pdf-view-mode)
   :init
   (add-to-list 'file-coding-system-alist '("\\.pdf\\'" . no-conversion))
   :config
   (pdf-tools-install :no-query)
-  ;; UPDATED HOOK: Disables line numbers AND git-gutter
   :hook (pdf-view-mode . (lambda () 
                            (display-line-numbers-mode -1)
                            (git-gutter-mode -1))))
@@ -621,13 +656,47 @@
   (setq which-key-side-window-location 'bottom)
   (setq which-key-sort-order 'which-key-description-order))
 
+(use-package buffer-move
+  :straight t)
+
+(defun my/open-in-nemo ()
+  "Open current directory in Nemo, ensuring LD_LIBRARY_PATH doesn't break it."
+  (interactive)
+  (let ((path (expand-file-name default-directory))
+        ;; Create a temporary environment copy for this command only
+        (process-environment (copy-sequence process-environment)))
+    
+    ;; Unset the variable causing the CXXABI error
+    (setenv "LD_LIBRARY_PATH" nil)
+    
+    (if (executable-find "nemo")
+        (progn
+          (message "Launching Nemo at %s..." path)
+          ;; 0 argument ensures it detaches immediately
+          (call-process-shell-command (format "nemo \"%s\"" path) nil 0))
+      (message "Error: Nemo not found in path."))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Language-Specific Configurations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Python
-(use-package python-mode
+(use-package python
+  :ensure nil
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python" . python-mode)
+  :config)
+
+;; Rust (Rustic)
+(use-package rustic
+  :straight t
+  :config
+  (setq rustic-lsp-client 'eglot) ;; Changed from nil to eglot
+  (setq rustic-format-on-save t)
+  (setq rustic-flycheck-setup-mode-line-p nil))
+
+;; TOML
+(use-package toml-mode
   :straight t)
 
 ;; web
