@@ -38,7 +38,6 @@
         border_size = 1;
         "col.active_border" = "rgb(cba6f7)";
         "col.inactive_border" = "0x00000000";
-        no_border_on_floating = false;
       };
 
       misc = {
@@ -208,62 +207,6 @@
       bindm = [
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
-      ];
-
-      windowrulev2 = [
-        # Converted from old windowrule syntax (mostly class matches)
-        "center,class:^(imv)$"
-        "size 1200 725,class:^(imv)$"
-        "float,class:^(mpv)$"
-        "center,class:^(mpv)$"
-        "tile,class:^(Aseprite)$"
-        "size 1200 725,class:^(mpv)$" # Note: mpv size rule applied here
-        "float,class:^(audacious)$"
-        "workspace 8 silent,class:^(audacious)$"
-        "pin,class:^(wofi)$"
-        "float,class:^(wofi)$"
-        "noborder,class:^(wofi)$"
-        "tile,class:^(neovide)$"
-        "idleinhibit focus,class:^(mpv)$"
-        "float,class:^(udiskie)$"
-        "float,title:^(float_kitty)$"
-        "center,title:^(float_kitty)$"
-        "size 950 600,title:^(float_kitty)$"
-        "float,title:^(Transmission)$"
-        "float,title:^(Volume Control)$"
-        "float,title:^(Firefox — Sharing Indicator)$"
-        "move 0 0,title:^(Firefox — Sharing Indicator)$"
-        "size 700 450,title:^(Volume Control)$" # Note: Volume Control size rule applied here
-        "move 40 55%,title:^(Volume Control)$"
-        "float, title:^(Picture-in-Picture)$"
-        "opacity 1.0 override 1.0 override, title:^(Picture-in-Picture)$"
-        "pin, title:^(Picture-in-Picture)$"
-        "opacity 1.0 override 1.0 override, title:^(.*imv.*)$"
-        "opacity 1.0 override 1.0 override, title:^(.*mpv.*)$"
-        "opacity 1.0 override 1.0 override, class:(Aseprite)"
-        "opacity 1.0 override 1.0 override, class:(Unity)"
-        "idleinhibit focus, class:^(mpv)$"
-        "idleinhibit fullscreen, class:^(firefox)$"
-        "float,class:^(zenity)$"
-        "center,class:^(zenity)$"
-        "size 850 500,class:^(zenity)$"
-        "float,class:^(pavucontrol)$"
-        "float,class:^(SoundWireServer)$"
-        "float,class:^(.sameboy-wrapped)$"
-        "float,class:^(file_progress)$"
-        "float,class:^(confirm)$"
-        "float,class:^(dialog)$"
-        "float,class:^(download)$"
-        "float,class:^(notification)$"
-        "float,class:^(error)$"
-        "float,class:^(confirmreset)$"
-        "float,title:^(Open File)$"
-        "float,title:^(branchdialog)$"
-        "float,title:^(wdisplays)$"
-        "float,title:^(Confirm to replace files)$"
-        "float,title:^(File Operation Progress)$"
-        "float,class:floating"
-        "size 850 500,class:floating"
       ];
 
     };

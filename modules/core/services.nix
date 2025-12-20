@@ -27,16 +27,18 @@
     # AI / LLM
     ollama = {
       enable = true;
-      acceleration = "cuda";
+      package = pkgs.ollama-cuda;
     };
 
     # Display Manager & Auto-Login
     displayManager = {
+      defaultSession = "hyprland";
+
       sddm = {
         enable = true;
         wayland.enable = false;
       };
-      
+
       autoLogin = {
         enable = true;
         user = "${username}";
