@@ -8,11 +8,25 @@
       enable = true;
       plugins = [ "git" "direnv"];
     };
+
     initContent = ''
       DISABLE_MAGIC_FUNCTIONS=true
       export "MICRO_TRUECOLOR=1"
       TERM=xterm-256color
       bindkey '^ ' autosuggest-accept
+
+      # Custom Notify Function
+      # Usage: notify <command>
+      function notify() {
+          "$@"
+          local job_status=$?
+          if [ $job_status -eq 0 ]; then
+              ${pkgs.libnotify}/bin/notify-send "Success" "Command completed successfully: $*" -i terminal
+          else
+              ${pkgs.libnotify}/bin/notify-send "Failure" "Command failed with exit code $job_status: $*" -i error -u critical
+          fi
+          return $job_status
+      }
     '';
 
     shellAliases = {

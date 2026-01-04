@@ -268,14 +268,7 @@
   "c t" 'eglot-find-typeDefinition
   "c R" 'eglot-reconnect
 
-  ;; --- FLYCHECK ---
-  "e l" 'flycheck-list-errors
-  "e n" 'flycheck-next-error
-  "e p" 'flycheck-previous-error
-  "e c" 'flycheck-clear
-  "e d" 'flycheck-describe-checker
-  "e a" 'flycheck-disable-checker
-  "e e" 'flycheck-buffer
+  ;; --- Flyspell ---
   "e h" 'flyspell-correct-at-point
 
   ;; --- ORG MODE ---
@@ -519,15 +512,6 @@
 (use-package format-all
   :straight t)
 
-(use-package flycheck
-  :straight t
-  :config
-  (global-flycheck-mode 1)
-  (setq flycheck-highlighting-mode 'lines)
-  (setq flycheck-display-errors-delay 0.5)
-  (setq flycheck-check-syntax-automatically '(mode-enable save new-line))
-  (setq flycheck-indication-mode 'right-fringe))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Spell Checking (Aspell)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -692,8 +676,7 @@
   :straight t
   :config
   (setq rustic-lsp-client 'eglot) ;; Changed from nil to eglot
-  (setq rustic-format-on-save t)
-  (setq rustic-flycheck-setup-mode-line-p nil))
+  (setq rustic-format-on-save t)) ;;
 
 ;; TOML
 (use-package toml-mode
