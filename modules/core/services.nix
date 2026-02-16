@@ -32,11 +32,11 @@
 
     # Display Manager & Auto-Login
     displayManager = {
-      defaultSession = "hyprland";
+      defaultSession = "hyprland-uwsm";
 
       sddm = {
         enable = true;
-        wayland.enable = false;
+        wayland.enable = true;
       };
 
       autoLogin = {

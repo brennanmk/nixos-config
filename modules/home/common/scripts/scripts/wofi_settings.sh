@@ -8,9 +8,9 @@ declare -A commands
 # --- Define Menu Items ---
 
 # System & Connectivity
-commands["  Wifi"]="kitty --class floating -e nmtui &"
+commands["  Network"]="kitty --class floating --override color0=#1e1e2e -e nmtui &"
 commands["󰂰  Bluetooth"]="kitty --class floating -e bluetuith &"
-commands["󱋆  Display Settings"]="wdisplays &"
+commands["󱋆  Display Settings"]="kitty --class floating -e hyprmon &"
 commands["  Audio Control"]="kitty --class floating -e pulsemixer"
 
 # -------------------------

@@ -6,5 +6,6 @@
     ./kitty.nix         # terminal
     ./packages.nix      # other packages
     ./scripts/scripts.nix # personal scripts
+    ./xdg.nix           # xdg mime associations
   ];
 }

@@ -123,7 +123,9 @@
         "ALT, Return, exec, kitty --title float_kitty"
         "$mainMod SHIFT, Return, exec, kitty --start-as=fullscreen -o 'font_size=16'"
         "$mainMod, Q, killactive,"
-        "$mainMod, S, exec, wofi_firefox"
+        "$mainMod, S, exec, wofi_settings"
+        "$mainMod, B, exec, wofi_firefox"
+        "$mainMod, C, exec, wofi_capture"
         "$mainMod, F, fullscreen, 0"
         "$mainMod SHIFT, F, fullscreen, 1"
         "$mainMod, Space, togglefloating,"
@@ -132,6 +134,8 @@
         "$mainMod, P, pseudo,"
         "$mainMod, J, togglesplit,"
         "$mainMod, E, exec, nemo"
+        "$mainMod, N, exec, kitty --class floating --override color0=#1e1e2e -e nmtui"
+        "$mainMod, D, exec, kitty --class floating -e hyprmon"
         "$mainMod SHIFT, B, exec, pkill -SIGUSR1 .waybar-wrapped"
 
         # switch focus
@@ -199,6 +203,12 @@
 
       ];
 
+      windowrulev2 = [
+        "float, class:^(floating)$"
+        "center, class:^(floating)$"
+        "size 800 600, class:^(floating)$"
+      ];
+
       # mouse binding
       bindm = [
         "$mainMod, mouse:272, movewindow"
@@ -208,6 +218,9 @@
     };
 
     extraConfig = "
+      # Internal display - explicit so Hyprland always has a fallback on disconnect
+      monitor=eDP-1,preferred,auto,1
+      # Catch-all for any external monitors plugged in
       monitor=,preferred,auto,1
 
       xwayland {

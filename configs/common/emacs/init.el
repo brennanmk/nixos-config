@@ -24,7 +24,19 @@
 
 ;; Install use-package
 (straight-use-package 'use-package)
-(setq straight-use-package-by-default t) 
+(setq straight-use-package-by-default t)
+
+;; cond-let is required by transient but not in MELPA/NonGNU — register before transient
+(straight-use-package '(cond-let :type git :host github :repo "tarsius/cond-let"))
+
+;; Ensure latest transient is installed before magit/docker/agent-shell load
+(straight-use-package 'transient)
+
+;; Inherit shell PATH (needed on NixOS for binaries like claude-code-acp, opencode)
+(use-package exec-path-from-shell
+  :straight t
+  :config
+  (exec-path-from-shell-initialize)) 
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -82,6 +94,11 @@
     (abort-recursive-edit)))
 (add-hook 'mouse-leave-buffer-hook 'stop-using-minibuffer)
 
+(use-package unfill
+  :straight t
+  :config
+  ;; Optional: bind M-q to toggle between fill and unfill globally
+  (global-set-key [remap fill-paragraph] 'unfill-toggle))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Theme and Modeline
@@ -164,6 +181,7 @@
 ;; --- FILE MANAGEMENT ---
   "f f" 'find-file
   "f t" 'my/find-file-tramp
+  "f C" 'my/find-file-in-ros-container
   "f d" 'dired
   "f s" 'save-buffer
   "f w" 'write-file
@@ -245,18 +263,24 @@
   "p c" 'projectile-compile
   "p s" 'projectile-save-project-buffers
 
-  ;; --- AIDER ---
-  "a c" 'aider-chat
-  "a f" 'aider-add-current-file
-  "a d" 'aider-drop-current-file
-  "a r" 'aider-send-region
-  "a i" 'aider-code-change
-  "a t" 'aider-implement-todo
-  "a a" 'aider-run-aider
-  "a D" 'aider-diff
-  "a C" 'aider-commit
-  "a x" 'aider-clear-chat-and-context
-  "a q" 'aider-quit
+  ;; --- AGENT SHELL ---
+  "a s" 'agent-shell
+  "a n" 'agent-shell-new-shell
+  "a t" 'agent-shell-toggle
+  "a b" 'agent-shell-other-buffer
+  "a c" 'agent-shell-anthropic-start-claude-code
+  "a o" 'agent-shell-opencode-start-agent
+  "a m" 'agent-shell-set-session-mode
+  "a M" 'agent-shell-set-session-model
+  "a i" 'agent-shell-interrupt
+  "a r" 'agent-shell-send-region
+  "a f" 'agent-shell-send-file
+
+  ;; --- MINUET ---
+  "m m" 'minuet-auto-suggestion-mode
+  "m p" 'minuet-configure-provider
+  "m i" 'minuet-show-suggestion
+  "m c" 'minuet-complete-with-minibuffer
 
   ;; --- LSP (EGLOT) ---
   "c r" 'eglot-rename
@@ -267,6 +291,8 @@
   "c i" 'eglot-find-implementation
   "c t" 'eglot-find-typeDefinition
   "c R" 'eglot-reconnect
+  "c b" 'xref-go-back
+  "c F" 'xref-go-forward
 
   ;; --- Flyspell ---
   "e h" 'flyspell-correct-at-point
@@ -310,7 +336,7 @@
  'remote-config-profile
  '((tramp-direct-async-process . t)
    (python-shell-interpreter . "python3")
-   (python-shell-interpreter-args . "-i"))) 
+   (python-shell-interpreter-args . "-i")))
 
 (connection-local-set-profiles
  '(:application tramp :protocol "sftp")
@@ -322,7 +348,35 @@
 
 (with-eval-after-load 'tramp
   (with-eval-after-load 'compile
-    (remove-hook 'compilation-mode-hook #'tramp-compile-disable-ssh-controlmaster-options)))
+    (remove-hook 'compilation-mode-hook #'tramp-compile-disable-ssh-controlmaster-options))
+
+  ;; Add Docker TRAMP method for ROS container development
+  (add-to-list 'tramp-methods
+               '("docker"
+                 (tramp-login-program "docker")
+                 (tramp-login-args (("exec" "-it") ("-u" "%u") ("%h") ("sh")))
+                 (tramp-remote-shell "/bin/sh")
+                 (tramp-remote-shell-args ("-i" "-c")))))
+
+;; Convenience function to open files in ROS container
+(defun my/find-file-in-ros-container ()
+  "Open a file in a running ROS container via TRAMP.
+Queries Docker for running containers named ros1* or ros2* and prompts
+the user to select one."
+  (interactive)
+  (let* ((containers
+          (split-string
+           (string-trim
+            (shell-command-to-string
+             "docker ps --format '{{.Names}}' | grep -E '^ros[12]'"))
+           "\n" t))
+         (_ (when (null containers)
+              (user-error "No running ROS containers found (ros1* or ros2*)")))
+         (container (if (= (length containers) 1)
+                        (car containers)
+                      (completing-read "Select ROS container: " containers nil t)))
+         (default-directory (format "/docker:%s:/ros_ws/src/" container)))
+    (call-interactively 'find-file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; AI Tools (Aider & Gptel)
@@ -339,14 +393,43 @@
 
 ;; Advise key functions to run our check first.
 (advice-add #'completion-at-point :before #'my/ensure-ollama-is-running)
-(advice-add #'aider-chat :before #'my/ensure-ollama-is-running)
 
-(use-package aider
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Minuet AI (on-demand inline completion)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package minuet
   :straight t
   :config
-  (setq aider-args `("--config" ,(expand-file-name "~/.aider.conf.yml")))
-  (global-set-key (kbd "C-c a") 'aider-transient-menu)
-  (aider-magit-setup-transients))
+  ;; Default provider
+  (setq minuet-provider 'claude)
+  ;; Claude
+  (plist-put minuet-claude-options :api-key "ANTHROPIC_API_KEY")
+  ;; Ollama (qwen2.5-coder via openai-fim-compatible)
+  (plist-put minuet-openai-fim-compatible-options :name "Ollama")
+  (plist-put minuet-openai-fim-compatible-options :end-point "http://localhost:11434/v1/completions")
+  (plist-put minuet-openai-fim-compatible-options :api-key "TERM")
+  (plist-put minuet-openai-fim-compatible-options :model "qwen2.5-coder:7b")
+  (minuet-set-optional-options minuet-openai-fim-compatible-options :max_tokens 256)
+  (setq minuet-n-completions 1)
+  :bind (:map minuet-active-mode-map
+              ("M-p" . minuet-previous-suggestion)
+              ("M-n" . minuet-next-suggestion)
+              ("M-a" . minuet-accept-suggestion)
+              ("M-e" . minuet-dismiss-suggestion)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Agent Shell
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package acp
+  :straight (:host github :repo "xenodium/acp.el"))
+
+(use-package agent-shell
+  :straight (:host github :repo "xenodium/agent-shell")
+  :config
+  (setq agent-shell-anthropic-authentication
+        (agent-shell-anthropic-make-authentication :login t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Completion Framework
@@ -440,21 +523,39 @@
 (use-package eglot
   :ensure nil ;; Built-in to Emacs 29+
   :init
-  (defun my/eglot-ensure-if-local ()
-    "Start Eglot only if the buffer is not on a remote system (TRAMP)."
-    (unless (file-remote-p (or (buffer-file-name) default-directory))
-      (eglot-ensure)))
-  :hook ((python-mode . my/eglot-ensure-if-local)
-         (rust-mode . my/eglot-ensure-if-local)
-         (nix-mode . my/eglot-ensure-if-local)
-         (c-mode . my/eglot-ensure-if-local)
-         (c++-mode . my/eglot-ensure-if-local))
+  (defun my/eglot-ensure-smart ()
+    "Start Eglot, allowing Docker TRAMP but skipping other remote connections."
+    (let ((file (or (buffer-file-name) default-directory)))
+      (if (and (file-remote-p file)
+               (not (string-prefix-p "/docker:" file)))
+          (message "Skipping LSP for non-Docker remote file: %s" file)
+        (eglot-ensure))))
+  :hook ((python-mode . my/eglot-ensure-smart)
+         (rust-mode . my/eglot-ensure-smart)
+         (nix-mode . my/eglot-ensure-smart)
+         (c-mode . my/eglot-ensure-smart)
+         (c++-mode . my/eglot-ensure-smart))
   :config
   (setq eglot-events-buffer-size 0)
   (setq eglot-autoshutdown t)
   (setq completion-cycle-threshold nil)
-  
-  (define-key eglot-mode-map (kbd "<backtab>") #'completion-at-point))
+
+  (define-key eglot-mode-map (kbd "<backtab>") #'completion-at-point)
+
+  ;; Configure eglot to use pylsp-wrapper for ROS containers via TRAMP
+  ;; This ensures the LSP server has access to ROS packages
+  (defun my/eglot-pylsp-command (&optional interactive)
+    "Return pylsp command, using wrapper for ROS containers.
+INTERACTIVE is passed by eglot but not used here."
+    (if (and (file-remote-p default-directory)
+             (string-match-p "^ros[12]"
+                           (or (file-remote-p default-directory 'host) "")))
+        '("/usr/local/bin/pylsp-wrapper")
+      (eglot-alternatives '("pylsp"))))
+
+  ;; Add our custom command function for Python modes
+  (add-to-list 'eglot-server-programs
+               '((python-mode python-ts-mode) . my/eglot-pylsp-command)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Route Completions to Vertico
@@ -743,3 +844,22 @@
 
 ;; ROS Launch
 (add-to-list 'auto-mode-alist '("\\.launch\\'" . nxml-mode))
+
+;; C/C++
+(use-package cc-mode
+  :ensure nil
+  :config
+  ;; Set C style preferences
+  (setq c-default-style "linux"
+        c-basic-offset 4)
+
+  ;; Add useful hooks
+  (add-hook 'c-mode-hook
+            (lambda ()
+              (setq indent-tabs-mode nil)  ; Use spaces
+              (setq show-trailing-whitespace t)))
+
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (setq indent-tabs-mode nil)
+              (setq show-trailing-whitespace t))))

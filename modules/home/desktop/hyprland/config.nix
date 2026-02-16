@@ -129,10 +129,15 @@
         "$mainMod SHIFT, F, fullscreen, 1"
         "$mainMod, Space, togglefloating,"
         "$mainMod, R, exec, wofi"
+        "$mainMod, S, exec, wofi_settings"
+        "$mainMod, B, exec, wofi_firefox"
+        "$mainMod, C, exec, wofi_capture"
         "$mainMod SHIFT, Escape, exec, shutdown-script"
         "$mainMod, P, pseudo,"
         "$mainMod, J, togglesplit,"
         "$mainMod, E, exec, nemo"
+        "$mainMod, N, exec, kitty --class floating --override color0=#1e1e2e -e nmtui"
+        "$mainMod, D, exec, kitty --class floating -e hyprmon"
         "$mainMod SHIFT, B, exec, pkill -SIGUSR1 .waybar-wrapped"
 
         # screenshot
@@ -201,6 +206,12 @@
         "$mainMod, XF86MonBrightnessUp, exec, brightnessctl set 100%+"
         "$mainMod, XF86MonBrightnessDown, exec, brightnessctl set 100%-"
 
+      ];
+
+      windowrulev2 = [
+        "float, class:^(floating)$"
+        "center, class:^(floating)$"
+        "size 800 600, class:^(floating)$"
       ];
 
       # mouse binding

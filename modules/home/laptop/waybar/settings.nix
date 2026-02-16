@@ -46,7 +46,7 @@
       tooltip-format = "Connected to {essid} {ifname} via {gwaddr}";
       format-linked = "{ifname} (No IP)";
       format-disconnected = "󰖪  Disconnected";
-      on-click = "kitty --class floating -e nmtui";
+      on-click = "kitty --class floating --override color0=#1e1e2e -e nmtui";
     };
     tray = {
       icon-size = 20;
@@ -124,7 +124,7 @@
       format = "󰹑";
       tooltip = true;
       tooltip-format = "Screenshot Menu";
-      on-click = "wofi_screenshot";
+      on-click = "wofi_capture";
       escape = true;
     };
 

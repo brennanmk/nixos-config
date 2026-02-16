@@ -9,16 +9,16 @@
     glib
     wayland
     xdg-utils
+    xdg-desktop-portal-gtk
   ];
 
-  systemd.user.targets.hyprland-session.Unit.Wants = [ "xdg-desktop-autostart.target" ];
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland = {
       enable = true;
       # hidpi = true;
     };
-    systemd.enable = true;
+    systemd.enable = false;  # Disabled when using UWSM
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
   };
 }

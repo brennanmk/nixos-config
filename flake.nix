@@ -7,8 +7,7 @@
   
     hypr-contrib.url = "github:hyprwm/contrib";
     hyprpicker.url = "github:hyprwm/hyprpicker";
-    alejandra.url = "github:kamadorueda/alejandra/3.0.0";
-    rose-pine-hyprcursor.url = "github:ndom91/rose-pine-hyprcursor";
+rose-pine-hyprcursor.url = "github:ndom91/rose-pine-hyprcursor";
 
     hyprland = {
       type = "git";
@@ -21,6 +20,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    hytale-launcher.url = "github:JPyke3/hytale-launcher-nix";
+
   };
 
   outputs = { nixpkgs, self, ...} @ inputs:
@@ -28,7 +29,7 @@
     username = "brennan";
     system = "x86_64-linux";
     pkgs = import nixpkgs {
-      inherit system;
+      system = system;
       config.allowUnfree = true;
     };
     lib = nixpkgs.lib;
@@ -36,13 +37,17 @@
   {
     nixosConfigurations = {
       desktop = nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [ (import ./hosts/desktop) ];
+        modules = [
+          { nixpkgs.hostPlatform.system = system; }
+          (import ./hosts/desktop)
+        ];
         specialArgs = { host="desktop"; inherit self inputs username ; };
       };
       laptop = nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [ (import ./hosts/laptop) ];
+        modules = [
+          { nixpkgs.hostPlatform.system = system; }
+          (import ./hosts/laptop)
+        ];
         specialArgs = { host="laptop"; inherit self inputs username ; };
       };
     };

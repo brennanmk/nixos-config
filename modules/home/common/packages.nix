@@ -1,5 +1,32 @@
 { inputs, pkgs, ... }:
 {
+  # Dracula theme for nmtui (newt color slots map to terminal palette)
+  home.sessionVariables.NEWT_COLORS = ''
+    root=white,black
+    border=blue,black
+    window=white,black
+    shadow=darkgrey,black
+    title=blue,black
+    button=black,cyan
+    actbutton=black,blue
+    checkbox=white,black
+    actcheckbox=black,blue
+    entry=white,black
+    label=cyan,black
+    listbox=white,black
+    actlistbox=black,blue
+    textbox=white,black
+    acttextbox=black,cyan
+    helpline=darkgrey,black
+    roottext=blue,black
+    emptyscale=,black
+    fullscale=,blue
+    disentry=darkgrey,black
+    compactbutton=black,cyan
+    actsellistbox=black,blue
+    sellistbox=blue,black
+  '';
+
   home.packages = (
     with pkgs;
     [
@@ -18,8 +45,10 @@
       gnumake
       cmake
       libtool
+      clang-tools # provides clangd LSP server
       lazysql
       nixfmt
+      claude-code
 
       # general appliactions
       firefox
@@ -54,7 +83,8 @@
 
       # LLM magic
       ollama
-      aider-chat
+      claude-code-acp
+      opencode
 
       unityhub
 
@@ -62,7 +92,7 @@
       bluetuith
       pulsemixer
       pavucontrol
-      wdisplays
+      hyprmon
       nemo
 
       inotify-tools
@@ -125,7 +155,6 @@
       playerctl # controller for media players
       unzip
       wget
-      inputs.alejandra.defaultPackage.${system}
     ]
   );
 }
