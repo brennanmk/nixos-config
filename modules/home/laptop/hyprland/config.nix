@@ -2,7 +2,8 @@
 {
   wayland.windowManager.hyprland = {
     settings = {
-      
+      "$mainMod" = "SUPER";
+
       # autostart
       exec-once = [
         "systemctl --user import-environment &"
@@ -30,7 +31,6 @@
       };
 
       general = {
-        "$mainMod" = "SUPER";
         layout = "dwindle";
         gaps_in = 2;
         gaps_out = 4;
@@ -203,10 +203,8 @@
 
       ];
 
-      windowrulev2 = [
-        "float, class:^(floating)$"
-        "center, class:^(floating)$"
-        "size 800 600, class:^(floating)$"
+      windowrule = [
+        "match:class ^(floating)$, float on, center on, size 800 600"
       ];
 
       # mouse binding
