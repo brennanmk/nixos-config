@@ -14,7 +14,7 @@
         "poweralertd &"
         "waybar &"
         "mako &"
-        "hyprpaper &"
+
         "emacs --daemon &"
         "hypridle"
         "hyprlock"
@@ -123,9 +123,11 @@
         "ALT, Return, exec, kitty --title float_kitty"
         "$mainMod SHIFT, Return, exec, kitty --start-as=fullscreen -o 'font_size=16'"
         "$mainMod, Q, killactive,"
+        "$mainMod SHIFT, Q, exec, hyprctl activewindow -j | jq '.pid' | xargs kill -9"
         "$mainMod, S, exec, wofi_settings"
         "$mainMod, B, exec, wofi_firefox"
         "$mainMod, C, exec, wofi_capture"
+        "$mainMod SHIFT, C, exec, caffeinate"
         "$mainMod, F, fullscreen, 0"
         "$mainMod SHIFT, F, fullscreen, 1"
         "$mainMod, Space, togglefloating,"
@@ -135,7 +137,8 @@
         "$mainMod, J, togglesplit,"
         "$mainMod, E, exec, nemo"
         "$mainMod, N, exec, kitty --class floating --override color0=#1e1e2e -e nmtui"
-        "$mainMod, D, exec, kitty --class floating -e hyprmon"
+        "$mainMod SHIFT, D, exec, hyprctl workspaces -j | jq -r '.[] | select(.monitor == \"eDP-1\") | .id' | xargs -I{} hyprctl dispatch moveworkspacetomonitor {} +1 && hyprctl dispatch moveworkspacetomonitor 1 +1"
+        "$mainMod SHIFT, E, exec, if [ -f /tmp/externals-disabled ]; then hyprctl keyword monitor ,preferred,auto,1 && rm /tmp/externals-disabled; else hyprctl keyword monitor ,disabled && touch /tmp/externals-disabled; fi"
         "$mainMod SHIFT, B, exec, pkill -SIGUSR1 .waybar-wrapped"
 
         # switch focus

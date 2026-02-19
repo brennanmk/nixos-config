@@ -80,7 +80,8 @@
 
       #image writing
       caligula
-
+      zoom-us
+      
       # LLM magic
       ollama
       claude-code-acp

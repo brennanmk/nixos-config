@@ -19,8 +19,9 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;; FIX: Prevent "Feature provided by different file" error for project.el
+;; FIX: Prevent "Feature provided by different file" errors for built-in packages
 (add-to-list 'straight-built-in-pseudo-packages 'project)
+(add-to-list 'straight-built-in-pseudo-packages 'flymake)
 
 ;; Install use-package
 (straight-use-package 'use-package)
@@ -618,14 +619,22 @@ INTERACTIVE is passed by eglot but not used here."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package flyspell
-  :straight t
+  :ensure nil
+  :straight nil
   :config
   (setq ispell-program-name "aspell")
   (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together"))
   (setq flyspell-issue-message-flag nil)
   (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-wrapper)
   (add-hook 'text-mode-hook 'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode))
+
+(use-package flyspell-lazy
+  :straight t
+  :after flyspell
+  :config
+  (flyspell-lazy-mode 1))
 
 (use-package flyspell-correct
   :straight t
@@ -801,7 +810,6 @@ INTERACTIVE is passed by eglot but not used here."
   (setq TeX-parse-self t)
   (setq TeX-master t)
   (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
   (setq reftex-plug-into-AUCTeX t))
 

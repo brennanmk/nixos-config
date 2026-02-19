@@ -13,6 +13,13 @@ commands["󰂰  Bluetooth"]="kitty --class floating -e bluetuith &"
 commands["󱋆  Display Settings"]="kitty --class floating -e hyprmon &"
 commands["  Audio Control"]="kitty --class floating -e pulsemixer"
 
+# Caffeinate toggle
+if pgrep -x hypridle > /dev/null; then
+    commands["  Caffeinate"]="caffeinate"
+else
+    commands["  Decaffeinate"]="caffeinate"
+fi
+
 # -------------------------
 
 # Get the list of menu labels (the array keys) for wofi.

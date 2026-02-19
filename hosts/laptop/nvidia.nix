@@ -9,7 +9,8 @@ in
     boot.kernelModules = [ "amdgpu" ];
     boot.kernelParams = [
         "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
-        "nvidia_drm.modeset=1" 
+        "nvidia_drm.modeset=1"
+        "nvidia_drm.fbdev=1"
     ];
     hardware = {
         nvidia = {
@@ -19,6 +20,7 @@ in
             open = lib.mkDefault false;
 
             prime = {
+                offload.enable = true;
                 amdgpuBusId = lib.mkDefault "PCI:34:0:0";
                 nvidiaBusId = "PCI:1:0:0";
             };
