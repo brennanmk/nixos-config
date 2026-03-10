@@ -1,4 +1,4 @@
-{ pkgs, config, ... }: 
+{ pkgs, config, lib, ... }: 
 {
   imports = [
     ./hardware-configuration.nix
@@ -39,6 +39,13 @@
           turbo = "auto";
         };
       };
+    };
+  };
+
+  specialisation = {
+    rt-kernel.configuration = {
+      system.nixos.tags = [ "rt-kernel" ];
+      boot.kernelPackages = lib.mkForce pkgs.linuxPackages-rt_latest;
     };
   };
 

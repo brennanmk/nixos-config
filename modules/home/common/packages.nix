@@ -49,6 +49,7 @@
       lazysql
       nixfmt
       claude-code
+      gemini-cli
 
       # general appliactions
       firefox

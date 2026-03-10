@@ -141,6 +141,7 @@
         "$mainMod, N, exec, kitty --class floating --override color0=#1e1e2e -e nmtui"
         "$mainMod, D, exec, kitty --class floating -e hyprmon"
         "$mainMod SHIFT, B, exec, pkill -SIGUSR1 .waybar-wrapped"
+        "$mainMod, L, exec, hyprlock"
 
         # screenshot
         "$mainMod, Print, exec, grimblast --notify --cursor --freeze save area ~/Pictures/$(date +'%Y-%m-%d-At-%Ih%Mm%Ss').png"

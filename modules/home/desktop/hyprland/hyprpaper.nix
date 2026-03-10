@@ -13,7 +13,7 @@
       ipc = true
 
       wallpaper {
-        monitor =
+        monitor = DP-2
         path = ~/Pictures/wallpapers/wallpaper.jpg
       }
     '';

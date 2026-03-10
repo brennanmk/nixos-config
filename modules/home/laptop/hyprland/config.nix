@@ -140,6 +140,7 @@
         "$mainMod SHIFT, D, exec, hyprctl workspaces -j | jq -r '.[] | select(.monitor == \"eDP-1\") | .id' | xargs -I{} hyprctl dispatch moveworkspacetomonitor {} +1 && hyprctl dispatch moveworkspacetomonitor 1 +1"
         "$mainMod SHIFT, E, exec, if [ -f /tmp/externals-disabled ]; then hyprctl keyword monitor ,preferred,auto,1 && rm /tmp/externals-disabled; else hyprctl keyword monitor ,disabled && touch /tmp/externals-disabled; fi"
         "$mainMod SHIFT, B, exec, pkill -SIGUSR1 .waybar-wrapped"
+        "$mainMod, L, exec, hyprlock"
 
         # switch focus
         "$mainMod, left, movefocus, l"
