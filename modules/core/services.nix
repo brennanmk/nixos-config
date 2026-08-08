@@ -9,6 +9,7 @@
     dbus.enable = true;
     fstrim.enable = true;
     printing.enable = true;
+    ratbagd.enable = true;
 
     # Network Discovery & VPN
     zerotierone = {
@@ -27,7 +28,7 @@
     # AI / LLM
     ollama = {
       enable = true;
-      package = pkgs.ollama-cuda;
+      package = pkgs.ollama-bin;
     };
 
     # Display Manager & Auto-Login

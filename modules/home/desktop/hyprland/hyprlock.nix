@@ -8,13 +8,7 @@ in
     # BACKGROUND
     background {
         monitor =
-        #path = screenshot
-        #color = $background
-        blur_passes = 2
-        contrast = 1
-        brightness = 0.5
-        vibrancy = 0.2
-        vibrancy_darkness = 0.2
+        color = rgb(30, 30, 46)
     }
 
     animations {

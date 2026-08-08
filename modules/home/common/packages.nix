@@ -1,5 +1,8 @@
 { inputs, pkgs, ... }:
 {
+  # Add npm global bin to PATH declaratively
+  home.sessionPath = [ "$HOME/.npm-global/bin" ];
+
   # Dracula theme for nmtui (newt color slots map to terminal palette)
   home.sessionVariables.NEWT_COLORS = ''
     root=white,black
@@ -33,6 +36,7 @@
       bitwise # cli tool for bit / hex manipulation
       file # Show file information
       hexdump
+      jq # command-line JSON processor
       jdk17
       nitch # systhem fetch util
       nix-prefetch-github
@@ -73,7 +77,6 @@
       discord
       vesktop
       webcord
-      obs-studio
 
       nodejs
 
@@ -81,11 +84,9 @@
 
       #image writing
       caligula
-      zoom-us
-      
+
       # LLM magic
-      ollama
-      claude-code-acp
+      claude-agent-acp
       opencode
 
       unityhub
@@ -96,6 +97,7 @@
       pavucontrol
       hyprmon
       nemo
+      piper # GUI for ratbagd (gaming mouse config)
 
       inotify-tools
       nvidia-container-toolkit
@@ -108,7 +110,7 @@
       wl-mirror
 
       #xfce
-      blueberry
+      blueman
 
       (pkgs.python3.withPackages (ps: with ps; [
         black
@@ -149,6 +151,7 @@
       ffmpeg
       imv # image viewer
       libnotify
+      ghostscript # PostScript / PDF interpreter
       man-pages # extra man pages
       mpv # video player
       ncdu # disk space

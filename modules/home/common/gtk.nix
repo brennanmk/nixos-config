@@ -34,6 +34,7 @@ in
       package = pkgs.nordzy-cursor-theme;
       size = 22;
     };
+    gtk4.theme = config.gtk.theme;
   };
 
   home.pointerCursor = {

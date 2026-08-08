@@ -6,6 +6,7 @@
   caffeinate = pkgs.writeShellScriptBin "caffeinate" (builtins.readFile ./scripts/caffeinate.sh);
 
   record = pkgs.writeScriptBin "record" (builtins.readFile ./scripts/record.sh);
+  update-ollama = pkgs.writeShellScriptBin "update-ollama" (builtins.readFile ./scripts/update-ollama.sh);
 in {
   home.packages = with pkgs; [
     wofi_settings
@@ -14,5 +15,6 @@ in {
     wofi_firefox
     caffeinate
     record
+    update-ollama
   ];
 }

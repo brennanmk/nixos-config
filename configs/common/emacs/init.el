@@ -850,6 +850,29 @@ INTERACTIVE is passed by eglot but not used here."
   (add-hook 'org-mode-hook 'evil-org-mode)
   (setq evil-org-ret-behavior 'org-return))
 
+(use-package org-roam
+  :straight t
+  :after org
+  :custom
+  (org-roam-directory (file-truename "~/org/roam/"))
+  (org-roam-completion-everywhere t)
+  :config
+  (unless (file-directory-p org-roam-directory)
+    (make-directory org-roam-directory t))
+  (org-roam-db-autosync-mode))
+
+(evil-leader/set-key
+  "r f" 'org-roam-node-find
+  "r i" 'org-roam-node-insert
+  "r c" 'org-roam-capture
+  "r b" 'org-roam-buffer-toggle
+  "r g" 'org-roam-graph)
+
+(use-package vulpea
+  :straight t
+  :after org-roam
+  :hook (org-roam-db-autosync-mode . vulpea-db-autosync-enable))
+
 ;; ROS Launch
 (add-to-list 'auto-mode-alist '("\\.launch\\'" . nxml-mode))
 

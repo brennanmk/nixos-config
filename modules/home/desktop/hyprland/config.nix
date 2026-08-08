@@ -17,7 +17,6 @@
 
         "emacs --daemon"
         "hyprlock"
-        "hypridle"
       ];
 
       input = {
@@ -57,7 +56,6 @@
         special_scale_factor = 1.0;
         split_width_multiplier = 1.0;
         use_active_for_splits = true;
-        pseudotile = "yes";
         preserve_split = "yes";
       };
 
@@ -136,7 +134,7 @@
         "$mainMod SHIFT, C, exec, caffeinate"
         "$mainMod SHIFT, Escape, exec, shutdown-script"
         "$mainMod, P, pseudo,"
-        "$mainMod, J, togglesplit,"
+        "$mainMod, J, layoutmsg, togglesplit"
         "$mainMod, E, exec, nemo"
         "$mainMod, N, exec, kitty --class floating --override color0=#1e1e2e -e nmtui"
         "$mainMod, D, exec, kitty --class floating -e hyprmon"
@@ -224,9 +222,9 @@
     };
 
     extraConfig = "
-      monitor=DP-2,3440x1440@165.00,1080x0,1
-      monitor=HDMI-A-1,1920x1080,0x0,1,transform,1
-      monitor=DP-1,1920x1080,4520x0,1,transform,3
+      monitor=DP-2,3440x1440@165.00,1440x0,1
+      monitor=HDMI-A-1,3840x2160,0x0,1.5,transform,1
+      monitor=DP-1,3840x2160,4880x0,1.5,transform,3
 
       xwayland {
         force_zero_scaling = true

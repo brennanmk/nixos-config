@@ -32,20 +32,26 @@ rose-pine-hyprcursor.url = "github:ndom91/rose-pine-hyprcursor";
       system = system;
       config.allowUnfree = true;
     };
+
+    overlays = [
+      (final: prev: {
+        ollama-bin = final.callPackage (self + "/pkgs/ollama-bin.nix") { };
+      })
+    ];
     lib = nixpkgs.lib;
   in
   {
     nixosConfigurations = {
       desktop = nixpkgs.lib.nixosSystem {
         modules = [
-          { nixpkgs.hostPlatform.system = system; }
+          { nixpkgs.hostPlatform.system = system; nixpkgs.overlays = overlays; }
           (import ./hosts/desktop)
         ];
         specialArgs = { host="desktop"; inherit self inputs username ; };
       };
       laptop = nixpkgs.lib.nixosSystem {
         modules = [
-          { nixpkgs.hostPlatform.system = system; }
+          { nixpkgs.hostPlatform.system = system; nixpkgs.overlays = overlays; }
           (import ./hosts/laptop)
         ];
         specialArgs = { host="laptop"; inherit self inputs username ; };

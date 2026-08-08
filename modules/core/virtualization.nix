@@ -1,38 +1,14 @@
 { config, pkgs, lib, username, ... }:
 {
-  # Enable docker
+  # Enable Docker, Podman, and the modern NVIDIA toolkit
   hardware.nvidia-container-toolkit.enable = true;
   virtualisation.docker.enable = true;
   virtualisation.podman.enable = true;
-  virtualisation.docker.package = pkgs.docker;
 
-  # Fix nvidia-container-runtime to find runc in nix store
-  environment.etc."nvidia-container-runtime/config.toml".text = lib.mkForce ''
-    disable-require = true
-    supported-driver-capabilities = "compat32,compute,display,graphics,ngx,utility,video"
+  # Add user to libvirtd group (and docker/podman if you want rootless access)
+  users.users.${username}.extraGroups = [ "libvirtd" "docker" ];
 
-    [nvidia-container-cli]
-    environment = []
-    ldconfig = "@${pkgs.glibc.bin}/bin/ldconfig"
-    load-kmods = true
-    no-cgroups = false
-    path = "${pkgs.libnvidia-container}/bin/nvidia-container-cli"
-
-    [nvidia-container-runtime]
-    mode = "auto"
-    runtimes = ["${pkgs.runc}/bin/runc"]
-
-    [nvidia-container-runtime-hook]
-    path = "${pkgs.nvidia-container-toolkit}/bin/nvidia-container-runtime-hook"
-    skip-mode-detection = false
-
-    [nvidia-ctk]
-    path = "${pkgs.nvidia-container-toolkit}/bin/nvidia-ctk"
-  '';
-  # Add user to libvirtd group
-  users.users.${username}.extraGroups = [ "libvirtd" ];
-
-  # Install necessary packages
+  # Install necessary packages for VM management
   environment.systemPackages = with pkgs; [
     virt-manager
     virt-viewer
