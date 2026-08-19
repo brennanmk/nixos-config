@@ -34,8 +34,8 @@
       # Nixos
       mirror = "xrandr --output HDMI-0 --auto --scale-from 2560x1600 --same-as DP-4";
       nix-shell = "nix-shell --run zsh";
-      nix-switch = "sudo nixos-rebuild switch --flake ~/nixos-config#${host}";
-      nix-switchu = "update-ollama && sudo nixos-rebuild switch --upgrade --flake ~/nixos-config#${host}";
+      nix-switch = "sudo nixos-rebuild switch --flake ~/nixos-config#${host} && (pkill -x qs; QT_QPA_PLATFORM=wayland qs >/dev/null 2>&1 & disown)";
+      nix-switchu = "update-ollama && sudo nixos-rebuild switch --upgrade --flake ~/nixos-config#${host} && (pkill -x qs; QT_QPA_PLATFORM=wayland qs >/dev/null 2>&1 & disown)";
       nix-flake-update = "update-ollama && cd ~/nixos-config && sudo nix flake update";
       nix-flake-switch = "cd ~/nixos-config && sudo nix flake update && sudo nixos-rebuild switch --flake ~/nixos-config#${host}";
       nix-clean = "sudo nix-collect-garbage && sudo nix-collect-garbage -d && sudo rm /nix/var/nix/gcroots/auto/* && nix-collect-garbage && nix-collect-garbage -d";

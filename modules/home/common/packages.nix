@@ -125,6 +125,8 @@
         rapidfuzz
         watchdog
         packaging
+        python-pam # used by quickshell's lock-screen auth script
+        pygobject3 # used by quickshell's theme generator (GdkPixbuf)
       ]))
       pkgs.ruff 
 

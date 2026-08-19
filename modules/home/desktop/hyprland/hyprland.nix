@@ -14,6 +14,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
+    configType = "lua"; # required: pinned Hyprland (main) dropped hyprlang support
     xwayland = {
       enable = true;
       # hidpi = true;

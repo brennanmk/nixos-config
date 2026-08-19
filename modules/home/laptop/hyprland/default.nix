@@ -3,9 +3,11 @@
   imports = [
     ./hyprland.nix
     ./hypridle.nix
-    ./hyprlock.nix
-    ./hyprpaper.nix
     ./config.nix
+    ./userprefs.nix
     ./variables.nix
+    ../../common/quickshell
+    ../../common/hypr-scripts
+    ../../common/hypr-animations.nix
   ];
 }

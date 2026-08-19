@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 let
   monolisa = pkgs.callPackage ../../pkgs/monolisa/monolisa.nix { };
   monolisa-nerd = pkgs.callPackage ../../pkgs/monolisa/monolisa-nerd.nix {
@@ -20,11 +20,6 @@ in
       name = "JetBrainsMono Nerd Font";
       size = 12;
     };
-    theme = {
-      name = "Dracula";
-      package = pkgs.dracula-theme;
-    };
-
     iconTheme = {
       name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme.override { color = "black"; };
@@ -34,7 +29,6 @@ in
       package = pkgs.nordzy-cursor-theme;
       size = 22;
     };
-    gtk4.theme = config.gtk.theme;
   };
 
   home.pointerCursor = {

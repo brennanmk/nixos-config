@@ -9,13 +9,13 @@
         general = {
           after_sleep_cmd = "sleep 1 && wlopm --on '*'";
           ignore_dbus_inhibit = false;
-          lock_cmd = "pidof hyprlock || hyprlock";
+          lock_cmd = "echo '' | socat - UNIX-CONNECT:/tmp/quickshell_lockScreen";
         };
 
         listener = [
           {
             timeout = 900;
-            on-timeout = "loginctl lock-session";
+            on-timeout = "echo '' | socat - UNIX-CONNECT:/tmp/quickshell_lockScreen";
           }
           {
             timeout = 1000;

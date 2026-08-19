@@ -27,6 +27,11 @@
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
 
+;; Load Org via straight before anything else (e.g. evil-collection-init)
+;; can pull in the Org bundled with Emacs, which would clash with this
+;; newer version and trigger an "Org version mismatch" warning.
+(straight-use-package 'org)
+
 ;; cond-let is required by transient but not in MELPA/NonGNU — register before transient
 (straight-use-package '(cond-let :type git :host github :repo "tarsius/cond-let"))
 
