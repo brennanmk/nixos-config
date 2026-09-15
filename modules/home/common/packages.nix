@@ -41,9 +41,6 @@
       nitch # systhem fetch util
       nix-prefetch-github
       ripgrep # grep replacement
-      soundwireserver # pass audio to android phone
-      teams-for-linux
-      gimp
       # C / C++
       gcc
       gnumake
@@ -51,9 +48,15 @@
       libtool
       clang-tools # provides clangd LSP server
       lazysql
+
+      # Erlang / Elixir
+      beamPackages.erlang
+      beamPackages.elixir
+      elixir-ls # provides elixir-ls LSP server
+      erlang-language-platform # provides elp LSP server for erlang
       nixfmt
       claude-code
-      gemini-cli
+      antigravity-cli # replaces gemini-cli, which is being removed from nixpkgs
 
       # general appliactions
       firefox
@@ -67,7 +70,7 @@
       zotero
       libreoffice
       htop
-      cudatoolkit
+      (lib.hiPrio cudatoolkit)
       polybar
       htop
       obs-studio
@@ -114,19 +117,13 @@
 
       (pkgs.python3.withPackages (ps: with ps; [
         black
-        python-lsp-server
-        pyflakes
-        epc
-        orjson
-        sexpdata
-        six
         setuptools
-        paramiko
-        rapidfuzz
-        watchdog
         packaging
       ]))
-      pkgs.ruff 
+      pkgs.ruff
+      basedpyright # Python LSP: type-checking, completion, navigation
+      nixd # Nix LSP server
+      dasel # used by Emacs `pet` to parse pyproject.toml / detect venvs
 
       (aspellWithDicts (
         dicts: with dicts; [

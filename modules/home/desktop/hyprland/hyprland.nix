@@ -14,6 +14,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
+    configType = "hyprlang"; # keep hyprlang syntax; new default is "lua" as of stateVersion 26.05
     xwayland = {
       enable = true;
       # hidpi = true;

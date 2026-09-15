@@ -19,9 +19,28 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;; FIX: Prevent "Feature provided by different file" errors for built-in packages
-(add-to-list 'straight-built-in-pseudo-packages 'project)
-(add-to-list 'straight-built-in-pseudo-packages 'flymake)
+;; Pin package versions to the lockfile tracked in nixos-config. The repo copy
+;; is the source of truth; regenerate it with `emacs-lock freeze` (run by
+;; `nix-flake-update`) or `M-x straight-freeze-versions`. `emacs-lock thaw`
+;; forces every package back to it.
+(let* ((init-dir (file-name-directory (file-truename load-file-name)))
+       (repo-lock (expand-file-name "straight-versions.el" init-dir))
+       (straight-lock (expand-file-name "straight/versions/default.el"
+                                        user-emacs-directory)))
+  (when (file-exists-p repo-lock)
+    (make-directory (file-name-directory straight-lock) t)
+    (copy-file repo-lock straight-lock t)))
+
+;; Load org via straight early, before anything can pull in built-in Org.
+(straight-use-package 'org)
+
+;; FIX: Prevent "Feature provided by different file" errors for built-in
+;; packages. Emacs 30 already ships recent versions of all of these; letting
+;; straight build its own copies makes them collide with the built-ins that
+;; load during startup (e.g. "Feature 'xref' is now provided by a different
+;; file .../straight/build/xref/xref.elc"). eglot pulls the whole set as deps.
+(dolist (pkg '(eglot project flymake xref eldoc jsonrpc external-completion))
+  (add-to-list 'straight-built-in-pseudo-packages pkg))
 
 ;; Install use-package
 (straight-use-package 'use-package)
@@ -277,12 +296,6 @@
   "a r" 'agent-shell-send-region
   "a f" 'agent-shell-send-file
 
-  ;; --- MINUET ---
-  "m m" 'minuet-auto-suggestion-mode
-  "m p" 'minuet-configure-provider
-  "m i" 'minuet-show-suggestion
-  "m c" 'minuet-complete-with-minibuffer
-
   ;; --- LSP (EGLOT) ---
   "c r" 'eglot-rename
   "c a" 'eglot-code-actions
@@ -379,45 +392,9 @@ the user to select one."
          (default-directory (format "/docker:%s:/ros_ws/src/" container)))
     (call-interactively 'find-file)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; AI Tools (Aider & Gptel)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun my/ensure-ollama-is-running ()
-  "Check if Ollama server is running, and start it if not."
-  (interactive)
-  (let ((ollama-process (shell-command-to-string "pgrep ollama")))
-    (when (string-empty-p ollama-process)
-      (message "Ollama server not running. Starting it now...")
-      (start-process "ollama-server" nil "ollama" "serve")
-      (sleep-for 0.5)))) ; Give the server a moment to start
-
-;; Advise key functions to run our check first.
-(advice-add #'completion-at-point :before #'my/ensure-ollama-is-running)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Minuet AI (on-demand inline completion)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package minuet
-  :straight t
-  :config
-  ;; Default provider
-  (setq minuet-provider 'claude)
-  ;; Claude
-  (plist-put minuet-claude-options :api-key "ANTHROPIC_API_KEY")
-  ;; Ollama (qwen2.5-coder via openai-fim-compatible)
-  (plist-put minuet-openai-fim-compatible-options :name "Ollama")
-  (plist-put minuet-openai-fim-compatible-options :end-point "http://localhost:11434/v1/completions")
-  (plist-put minuet-openai-fim-compatible-options :api-key "TERM")
-  (plist-put minuet-openai-fim-compatible-options :model "qwen2.5-coder:7b")
-  (minuet-set-optional-options minuet-openai-fim-compatible-options :max_tokens 256)
-  (setq minuet-n-completions 1)
-  :bind (:map minuet-active-mode-map
-              ("M-p" . minuet-previous-suggestion)
-              ("M-n" . minuet-next-suggestion)
-              ("M-a" . minuet-accept-suggestion)
-              ("M-e" . minuet-dismiss-suggestion)))
+;; NOTE: In-buffer LLM completion (minuet) and other LLM integrations were
+;; removed; agent-shell below is the only AI tooling in this config. Ollama
+;; runs as a systemd user service (see Nix config), not started from Emacs.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Agent Shell
@@ -523,6 +500,7 @@ the user to select one."
 
 (use-package eglot
   :ensure nil ;; Built-in to Emacs 29+
+  :straight nil ;; use the built-in; don't let straight pull eglot + xref/eldoc/... from ELPA
   :init
   (defun my/eglot-ensure-smart ()
     "Start Eglot, allowing Docker TRAMP but skipping other remote connections."
@@ -532,31 +510,75 @@ the user to select one."
           (message "Skipping LSP for non-Docker remote file: %s" file)
         (eglot-ensure))))
   :hook ((python-mode . my/eglot-ensure-smart)
-         (rust-mode . my/eglot-ensure-smart)
          (nix-mode . my/eglot-ensure-smart)
          (c-mode . my/eglot-ensure-smart)
-         (c++-mode . my/eglot-ensure-smart))
+         (c++-mode . my/eglot-ensure-smart)
+         (erlang-mode . my/eglot-ensure-smart)
+         (elixir-mode . my/eglot-ensure-smart))
   :config
-  (setq eglot-events-buffer-size 0)
+  (setq eglot-events-buffer-config '(:size 0 :format full))
   (setq eglot-autoshutdown t)
   (setq completion-cycle-threshold nil)
 
   (define-key eglot-mode-map (kbd "<backtab>") #'completion-at-point)
 
-  ;; Configure eglot to use pylsp-wrapper for ROS containers via TRAMP
-  ;; This ensures the LSP server has access to ROS packages
-  (defun my/eglot-pylsp-command (&optional interactive)
-    "Return pylsp command, using wrapper for ROS containers.
-INTERACTIVE is passed by eglot but not used here."
+  ;; basedpyright diagnostic tuning: keep "standard" type-checking (same as
+  ;; vanilla pyright) but mute the basedpyright-only strict-typing nags.
+  ;; `pet' appends the project venv's :python (:pythonPath ...) on top of this
+  ;; per-buffer, so completions/nav resolve against the right interpreter.
+  (setq-default eglot-workspace-configuration
+                '(:basedpyright
+                  (:analysis
+                   (:typeCheckingMode "standard"
+                    :diagnosticSeverityOverrides
+                    (:reportAny "none"
+                     :reportExplicitAny "none"
+                     :reportUnknownMemberType "none"
+                     :reportUnknownArgumentType "none"
+                     :reportUnknownVariableType "none"
+                     :reportUnknownParameterType "none"
+                     :reportUnknownLambdaType "none"
+                     :reportMissingTypeStubs "none"
+                     :reportUnusedCallResult "none"
+                     :reportImplicitOverride "none")))))
+
+  ;; Python server: basedpyright locally, pylsp-wrapper inside ROS containers
+  ;; (the wrapper puts ROS packages on the server's PYTHONPATH).
+  (defun my/eglot-python-command (&optional _interactive)
+    "Return the Python LSP command for the current buffer."
     (if (and (file-remote-p default-directory)
              (string-match-p "^ros[12]"
-                           (or (file-remote-p default-directory 'host) "")))
+                             (or (file-remote-p default-directory 'host) "")))
         '("/usr/local/bin/pylsp-wrapper")
-      (eglot-alternatives '("pylsp"))))
+      '("basedpyright-langserver" "--stdio")))
 
-  ;; Add our custom command function for Python modes
   (add-to-list 'eglot-server-programs
-               '((python-mode python-ts-mode) . my/eglot-pylsp-command)))
+               '((python-mode python-ts-mode) . my/eglot-python-command))
+
+  ;; Nix
+  (add-to-list 'eglot-server-programs '((nix-mode nix-ts-mode) . ("nixd")))
+
+  ;; Erlang (elp) and Elixir (elixir-ls)
+  (add-to-list 'eglot-server-programs '(erlang-mode . ("elp" "server")))
+  (add-to-list 'eglot-server-programs '(elixir-mode . ("elixir-ls"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Project-aware Python tooling (pet) + eglot speedups
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Detect per-project venv / poetry / pipenv / conda and point eglot
+;; (basedpyright), formatters, and the inferior shell at that interpreter.
+(use-package pet
+  :straight t
+  :config
+  (add-hook 'python-base-mode-hook #'pet-mode -10))
+
+;; Speed up eglot's JSON-RPC via emacs-lsp-booster (binary comes from Nix).
+(use-package eglot-booster
+  :straight (:host github :repo "jdtsmith/eglot-booster")
+  :after eglot
+  :config
+  (eglot-booster-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Route Completions to Vertico
@@ -565,9 +587,7 @@ INTERACTIVE is passed by eglot but not used here."
 (use-package consult
   :straight t
   :config
-  (setq consult-preview-key nil)
-  ;; This forces completions into the Vertico minibuffer
-  (setq completion-in-region-function #'consult-completion-in-region))
+  (setq consult-preview-key nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Xref (Native Code Navigation)
@@ -721,7 +741,29 @@ INTERACTIVE is passed by eglot but not used here."
   (add-to-list 'file-coding-system-alist '("\\.pdf\\'" . no-conversion))
   :config
   (pdf-tools-install :no-query)
-  :hook (pdf-view-mode . (lambda () 
+  (setq pdf-view-display-size 'fit-height)
+  (defvar my/pdf-view--last-frame-sizes nil
+    "Alist of (FRAME . (WIDTH . HEIGHT)) in pixels, used to detect resizes.")
+  (defun my/pdf-view-poll-resize ()
+    "Redisplay pdf-view buffers when their frame's pixel size has changed.
+Tiling window managers resize frames externally, and pdf-view's
+built-in resize hooks (`window-configuration-change-hook',
+`window-size-change-functions') don't reliably fire for that, so
+pages go stale until the next page change. Polling is blunt but
+actually works."
+    (dolist (frame (frame-list))
+      (let* ((size (cons (frame-pixel-width frame) (frame-pixel-height frame)))
+             (cell (assq frame my/pdf-view--last-frame-sizes)))
+        (unless (equal (cdr cell) size)
+          (if cell
+              (setcdr cell size)
+            (push (cons frame size) my/pdf-view--last-frame-sizes))
+          (dolist (win (window-list frame))
+            (with-current-buffer (window-buffer win)
+              (when (eq major-mode 'pdf-view-mode)
+                (pdf-view-redisplay win))))))))
+  (run-with-timer 0.5 0.5 #'my/pdf-view-poll-resize)
+  :hook (pdf-view-mode . (lambda ()
                            (display-line-numbers-mode -1)
                            (git-gutter-mode -1))))
 
@@ -825,6 +867,10 @@ INTERACTIVE is passed by eglot but not used here."
   :mode (("\\.erl\\'" . erlang-mode)
          ("\\.hrl\\'" . erlang-mode)))
 
+;; Elixir
+(use-package elixir-mode
+  :straight t)
+
 ;; Org Mode
 (use-package org
   :straight t
@@ -841,8 +887,88 @@ INTERACTIVE is passed by eglot but not used here."
     "\n")
   (add-to-list 'auto-insert-alist '("\\.org\\'" . my-org-file-frontmatter))
   (setq org-return-follows-link t)
+  (setq org-startup-indented t)
   (add-hook 'org-mode-hook (lambda () (electric-indent-local-mode -1)))
-  (add-hook 'org-mode-hook (lambda () (electric-pair-local-mode -1))))
+  (add-hook 'org-mode-hook (lambda () (electric-pair-local-mode -1)))
+
+  ;; --- Workflow: capture -> inbox -> review/refile -----------------------
+  (defvar my/org-inbox (expand-file-name "inbox.org" org-directory)
+    "Single drop point for captured todos and notes.")
+
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
+  (setq org-log-done 'time
+        org-log-into-drawer t)
+
+  ;; Agenda starts from the inbox; vulpea (below) appends any roam note that
+  ;; carries live TODOs, so nothing you capture goes invisible.
+  (setq org-agenda-files (list my/org-inbox))
+  (setq org-agenda-start-with-log-mode t)
+
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)
+                             (nil :maxlevel . 3))
+        org-refile-use-outline-path 'file
+        org-outline-path-complete-in-steps nil
+        org-refile-allow-creating-parent-nodes 'confirm)
+
+  (setq org-capture-templates
+        `(("t" "Todo -> inbox" entry (file ,my/org-inbox)
+           "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i"
+           :empty-lines 1)
+          ("n" "Note -> inbox" entry (file ,my/org-inbox)
+           "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n%i"
+           :empty-lines 1)
+          ("l" "Link here -> inbox" entry (file ,my/org-inbox)
+           "* %?  %a\n:PROPERTIES:\n:CREATED: %U\n:END:"
+           :empty-lines 1)))
+
+  (defun my/org-capture-todo () (interactive) (org-capture nil "t"))
+  (defun my/org-capture-note () (interactive) (org-capture nil "n"))
+  (defun my/open-inbox () (interactive) (find-file my/org-inbox))
+
+  (defun my/org-search-all ()
+    "Ripgrep across the entire org-directory (roam + course/work notes)."
+    (interactive)
+    (consult-ripgrep (expand-file-name org-directory)))
+
+  (defun my/org-roam-adopt-file ()
+    "Turn the current whole-file org note into an org-roam node.
+Adds a top-level ID and moves the file into `org-roam-directory' so
+it joins the graph and full-text search. Use to migrate old notes."
+    (interactive)
+    (unless (derived-mode-p 'org-mode) (user-error "Not an org buffer"))
+    (save-excursion
+      (goto-char (point-min))
+      (org-id-get-create))
+    (save-buffer)
+    (let* ((dest (expand-file-name (file-name-nondirectory buffer-file-name)
+                                   org-roam-directory)))
+      (rename-file buffer-file-name dest 1)
+      (set-visited-file-name dest)
+      (save-buffer)
+      (org-roam-db-sync)
+      (message "Adopted into org-roam: %s" dest)))
+
+  (unless (file-exists-p my/org-inbox)
+    (with-temp-file my/org-inbox
+      (insert "#+TITLE: Inbox\n#+FILETAGS: :inbox:\n\n")))
+
+  ;; --- Global capture frame (spawned by the `org-capture` shell script /
+  ;;     Hyprland SUPER+SHIFT+N keybind) ----------------------------------
+  (defun my/org-capture-frame ()
+    "Run `org-capture' in a throwaway frame for a window-manager keybind."
+    (interactive)
+    (require 'org-capture)
+    (select-frame-set-input-focus (selected-frame))
+    (condition-case nil
+        (org-capture)
+      (error (when (frame-parameter nil 'my-org-capture-frame)
+               (delete-frame)))))
+
+  (add-hook 'org-capture-after-finalize-hook
+            (lambda ()
+              (when (frame-parameter nil 'my-org-capture-frame)
+                (delete-frame)))))
 
 (use-package evil-org
   :straight t
@@ -855,23 +981,145 @@ INTERACTIVE is passed by eglot but not used here."
   :after org
   :custom
   (org-roam-directory (file-truename "~/org/roam/"))
+  (org-roam-dailies-directory "daily/")
   (org-roam-completion-everywhere t)
+  (org-roam-node-display-template
+   (concat "${title:*} " (propertize "${tags:40}" 'face 'org-tag)))
   :config
   (unless (file-directory-p org-roam-directory)
     (make-directory org-roam-directory t))
+  (require 'org-roam-dailies)
+
+  (setq org-roam-capture-templates
+        '(("d" "default" plain "%?"
+           :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                              "#+title: ${title}\n#+date: %U\n")
+           :unnarrowed t)))
+  (setq org-roam-dailies-capture-templates
+        '(("d" "default" entry "* %<%H:%M>  %?"
+           :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+
+  ;; Backlinks buffer as a docked side window (SPC r b to toggle).
+  (add-to-list 'display-buffer-alist
+               '("\\*org-roam\\*"
+                 (display-buffer-in-side-window)
+                 (side . right)
+                 (window-width . 0.33)
+                 (window-parameters . ((no-delete-other-windows . t)))))
+
   (org-roam-db-autosync-mode))
 
+;; Fuzzy search across the whole note corpus (title search + full-text
+;; ripgrep with live preview) and backlink navigation.
+(use-package consult-org-roam
+  :straight t
+  :after org-roam
+  :init
+  (consult-org-roam-mode 1)
+  :config
+  (setq consult-org-roam-grep-func #'consult-ripgrep
+        consult-org-roam-buffer-narrow-key ?r
+        consult-org-roam-buffer-after-buffers t))
+
+;; Interactive graph view in the browser (Obsidian-style).
+(use-package org-roam-ui
+  :straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start nil))
+
 (evil-leader/set-key
+  ;; capture / inbox / agenda
+  "o a" 'org-agenda
+  "o c" 'org-capture
+  "o t" 'my/org-capture-todo
+  "o n" 'my/org-capture-note
+  "o i" 'my/open-inbox
+  "o l" 'org-store-link
+  "o b" 'org-iswitchb
+  "o /" 'my/org-search-all
+  "o A" 'my/org-roam-adopt-file
+  ;; roam: notes + linking + search
   "r f" 'org-roam-node-find
   "r i" 'org-roam-node-insert
   "r c" 'org-roam-capture
   "r b" 'org-roam-buffer-toggle
-  "r g" 'org-roam-graph)
+  "r g" 'org-roam-graph
+  "r u" 'org-roam-ui-open
+  "r s" 'consult-org-roam-search
+  "r l" 'consult-org-roam-backlinks
+  "r r" 'consult-org-roam-forward-links
+  ;; roam dailies (journal)
+  "r j" 'org-roam-dailies-capture-today
+  "r J" 'org-roam-dailies-goto-today
+  "r Y" 'org-roam-dailies-goto-yesterday
+  "r n" 'org-roam-dailies-goto-next-note
+  "r p" 'org-roam-dailies-goto-previous-note)
 
+(evil-leader/set-key-for-mode 'org-mode
+  "o r" 'org-refile
+  "o w" 'org-refile)
+
+;; --- vulpea: make roam notes with live TODOs show up in the agenda -------
 (use-package vulpea
   :straight t
   :after org-roam
-  :hook (org-roam-db-autosync-mode . vulpea-db-autosync-enable))
+  :hook (org-roam-db-autosync-mode . vulpea-db-autosync-enable)
+  :config
+  (defun my/vulpea-buffer-p ()
+    "Non-nil if the current buffer is an org-roam note."
+    (and buffer-file-name
+         (string-prefix-p
+          (expand-file-name (file-name-as-directory org-roam-directory))
+          (expand-file-name (file-name-directory buffer-file-name)))))
+
+  (defun my/vulpea-project-p ()
+    "Non-nil if the current buffer has any todo entry that is not done."
+    (seq-find
+     (lambda (type) (eq type 'todo))
+     (org-element-map
+         (org-element-parse-buffer 'headline)
+         'headline
+       (lambda (h) (org-element-property :todo-type h)))))
+
+  (defun my/vulpea-project-update-tag ()
+    "Add or remove the \"project\" filetag based on todo contents."
+    (when (and (not (active-minibuffer-window))
+               (my/vulpea-buffer-p))
+      (save-excursion
+        (goto-char (point-min))
+        (let* ((tags (vulpea-buffer-tags-get))
+               (original-tags tags))
+          (if (my/vulpea-project-p)
+              (setq tags (cons "project" tags))
+            (setq tags (remove "project" tags)))
+          (setq tags (seq-uniq tags))
+          (when (or (seq-difference tags original-tags)
+                    (seq-difference original-tags tags))
+            (apply #'vulpea-buffer-tags-set tags))))))
+
+  (defun my/vulpea-project-files ()
+    "All org-roam files currently tagged as a project."
+    (seq-uniq
+     (seq-map
+      #'car
+      (org-roam-db-query
+       [:select [nodes:file]
+        :from tags
+        :left-join nodes :on (= tags:node-id nodes:id)
+        :where (like tag (quote "%\"project\"%"))]))))
+
+  (defun my/vulpea-agenda-files-update (&rest _)
+    (setq org-agenda-files
+          (seq-uniq (cons my/org-inbox (my/vulpea-project-files)))))
+
+  (add-hook 'find-file-hook #'my/vulpea-project-update-tag)
+  (add-hook 'before-save-hook #'my/vulpea-project-update-tag)
+  (advice-add 'org-agenda :before #'my/vulpea-agenda-files-update)
+  (advice-add 'org-todo-list :before #'my/vulpea-agenda-files-update))
 
 ;; ROS Launch
 (add-to-list 'auto-mode-alist '("\\.launch\\'" . nxml-mode))

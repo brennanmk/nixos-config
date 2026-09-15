@@ -7,6 +7,8 @@
 
   record = pkgs.writeScriptBin "record" (builtins.readFile ./scripts/record.sh);
   update-ollama = pkgs.writeShellScriptBin "update-ollama" (builtins.readFile ./scripts/update-ollama.sh);
+  emacs-lock = pkgs.writeShellScriptBin "emacs-lock" (builtins.readFile ./scripts/emacs-lock.sh);
+  org-capture = pkgs.writeShellScriptBin "org-capture" (builtins.readFile ./scripts/org-capture.sh);
 in {
   home.packages = with pkgs; [
     wofi_settings
@@ -16,5 +18,7 @@ in {
     caffeinate
     record
     update-ollama
+    emacs-lock
+    org-capture
   ];
 }

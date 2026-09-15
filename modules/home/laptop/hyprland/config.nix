@@ -128,6 +128,7 @@
         "$mainMod, B, exec, wofi_firefox"
         "$mainMod, C, exec, wofi_capture"
         "$mainMod SHIFT, C, exec, caffeinate"
+        "$mainMod SHIFT, N, exec, org-capture"
         "$mainMod, F, fullscreen, 0"
         "$mainMod SHIFT, F, fullscreen, 1"
         "$mainMod, Space, togglefloating,"
@@ -209,6 +210,7 @@
 
       windowrule = [
         "match:class ^(floating)$, float on, center on, size 800 600"
+        "match:title ^(org-capture)$, float on, center on, size 900 350"
       ];
 
       # mouse binding

@@ -36,9 +36,12 @@
       nix-shell = "nix-shell --run zsh";
       nix-switch = "sudo nixos-rebuild switch --flake ~/nixos-config#${host}";
       nix-switchu = "update-ollama && sudo nixos-rebuild switch --upgrade --flake ~/nixos-config#${host}";
-      nix-flake-update = "update-ollama && cd ~/nixos-config && sudo nix flake update";
+      nix-flake-update = "update-ollama && emacs-lock freeze && cd ~/nixos-config && sudo nix flake update";
       nix-flake-switch = "cd ~/nixos-config && sudo nix flake update && sudo nixos-rebuild switch --flake ~/nixos-config#${host}";
-      nix-clean = "sudo nix-collect-garbage && sudo nix-collect-garbage -d && sudo rm /nix/var/nix/gcroots/auto/* && nix-collect-garbage && nix-collect-garbage -d";
+      # Routine cleanup: drop generations older than 14d, keep dev-shell roots intact.
+      nix-clean = "sudo nix-collect-garbage --delete-older-than 14d && nix-collect-garbage --delete-older-than 14d";
+      # Nuke everything: all old generations + auto gcroots (direnv/nix-develop shells will rebuild).
+      nix-super-clean = "sudo nix-collect-garbage -d && sudo rm -f /nix/var/nix/gcroots/auto/* && nix-collect-garbage -d";
       sshk = "kitty +kitten ssh";
       phone = "f() { curl --silent --output nul -d $1 https://ntfy.bmillerklugman.me/phone };f";
     };

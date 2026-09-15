@@ -5,7 +5,7 @@
 let
   # Update version + hash when upgrading:
   #   nix-prefetch-url --unpack https://github.com/ollama/ollama/releases/download/v<version>/ollama-linux-amd64.tar.zst
-  version = "0.32.4";
+  version = "0.33.1";
 in
 stdenv.mkDerivation {
   pname = "ollama-bin";
@@ -13,7 +13,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://github.com/ollama/ollama/releases/download/v${version}/ollama-linux-amd64.tar.zst";
-    hash = "sha256-wA78wjbocWjlXK2cp8V4F3YtrQTM/EVlVGk1+s8i41k=";
+    hash = "sha256-iODTa9kBIVleVRbIT2q2G1RjaPvS2CW0qucJmclJZJ0=";
   };
 
   sourceRoot = ".";

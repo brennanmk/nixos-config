@@ -20,8 +20,6 @@ rose-pine-hyprcursor.url = "github:ndom91/rose-pine-hyprcursor";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hytale-launcher.url = "github:JPyke3/hytale-launcher-nix";
-
   };
 
   outputs = { nixpkgs, self, ...} @ inputs:
@@ -36,6 +34,7 @@ rose-pine-hyprcursor.url = "github:ndom91/rose-pine-hyprcursor";
     overlays = [
       (final: prev: {
         ollama-bin = final.callPackage (self + "/pkgs/ollama-bin.nix") { };
+        dracula-theme = final.callPackage (self + "/pkgs/dracula-theme.nix") { };
       })
     ];
     lib = nixpkgs.lib;
