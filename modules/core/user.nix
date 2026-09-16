@@ -6,12 +6,12 @@
     useGlobalPkgs = true;
     extraSpecialArgs = { inherit inputs username host; };
     users.${username} = {
-      imports = 
-        if (host == "desktop") then 
-          [ ./../home/desktop ]
-          ++ [./../home/common]
-        else [ ./../home/laptop ]
-              ++ [./../home/common];
+      imports = [
+        # work-laptop deliberately reuses the laptop home stack (hyprland,
+        # waybar, p10k); the machines only diverge below the HM layer.
+        (if host == "desktop" then ./../home/desktop else ./../home/laptop)
+        ./../home/common
+      ];
       home.username = "${username}";
       home.homeDirectory = "/home/${username}";
       home.stateVersion = "25.05";
