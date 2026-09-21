@@ -9,6 +9,7 @@
     ++ [ (import ./program.nix) ]
     ++ [ (import ./security.nix) ]
     ++ [ (import ./services.nix) ]
+    ++ [ (import ./syncthing.nix) ]
     ++ [ (import ./system.nix) ]
     ++ [ (import ./user.nix) ]
     ++ [ (import ./wayland.nix) ]

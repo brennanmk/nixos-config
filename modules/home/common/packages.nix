@@ -61,7 +61,7 @@
       # general appliactions
       firefox
       slack
-      emacs30-pgtk
+      emacs-pgtk
       emacs-lsp-booster
 
       spotify
