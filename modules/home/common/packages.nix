@@ -59,6 +59,7 @@
       antigravity-cli # replaces gemini-cli, which is being removed from nixpkgs
 
       # general appliactions
+      hyprpolkitagent # polkit auth agent; without one, GUI polkit prompts (fprintd enroll, etc.) fail closed
       firefox
       slack
       emacs-pgtk
@@ -107,7 +108,6 @@
       texliveFull
 
       davfs2
-      wofi
       picocom
       rclone
       wl-mirror

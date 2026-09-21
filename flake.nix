@@ -38,23 +38,22 @@ rose-pine-hyprcursor.url = "github:ndom91/rose-pine-hyprcursor";
       })
     ];
     lib = nixpkgs.lib;
+
+    # Every host is `hosts/<name>/default.nix` plus the shared platform/overlay
+    # module; `host` is threaded through to modules/core and home-manager.
+    mkHost = host: nixpkgs.lib.nixosSystem {
+      modules = [
+        { nixpkgs.hostPlatform.system = system; nixpkgs.overlays = overlays; }
+        (import (./hosts + "/${host}"))
+      ];
+      specialArgs = { inherit host self inputs username; };
+    };
   in
   {
     nixosConfigurations = {
-      desktop = nixpkgs.lib.nixosSystem {
-        modules = [
-          { nixpkgs.hostPlatform.system = system; nixpkgs.overlays = overlays; }
-          (import ./hosts/desktop)
-        ];
-        specialArgs = { host="desktop"; inherit self inputs username ; };
-      };
-      laptop = nixpkgs.lib.nixosSystem {
-        modules = [
-          { nixpkgs.hostPlatform.system = system; nixpkgs.overlays = overlays; }
-          (import ./hosts/laptop)
-        ];
-        specialArgs = { host="laptop"; inherit self inputs username ; };
-      };
+      desktop = mkHost "desktop";
+      laptop = mkHost "laptop";
+      work-laptop = mkHost "work-laptop";
     };
   };
 }

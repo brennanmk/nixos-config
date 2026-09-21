@@ -4,6 +4,7 @@
   wofi_firefox = pkgs.writeShellScriptBin "wofi_firefox" (builtins.readFile ./scripts/wofi_firefox.sh);
   wofi_capture = pkgs.writeShellScriptBin "wofi_capture" (builtins.readFile ./scripts/wofi_capture.sh);
   caffeinate = pkgs.writeShellScriptBin "caffeinate" (builtins.readFile ./scripts/caffeinate.sh);
+  hyprmon-apply = pkgs.writeShellScriptBin "hyprmon-apply" (builtins.readFile ./scripts/hyprmon-apply.sh);
 
   record = pkgs.writeScriptBin "record" (builtins.readFile ./scripts/record.sh);
   update-ollama = pkgs.writeShellScriptBin "update-ollama" (builtins.readFile ./scripts/update-ollama.sh);
@@ -16,6 +17,7 @@ in {
     wofi_power
     wofi_firefox
     caffeinate
+    hyprmon-apply
     record
     update-ollama
     emacs-lock

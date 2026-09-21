@@ -1,9 +1,6 @@
 { username, pkgs, ... }:
 {
   services = {
-    # Power management
-    logind.settings.Login.HandleLidSwitch = "ignore";
-
     # System services
     gvfs.enable = true;
     dbus.enable = true;

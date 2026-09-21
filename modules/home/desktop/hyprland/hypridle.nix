@@ -7,6 +7,7 @@
       enable = true;
       settings = {
         general = {
+          before_sleep_cmd = "pidof hyprlock || hyprlock";
           after_sleep_cmd = "sleep 1 && wlopm --on '*'";
           ignore_dbus_inhibit = false;
           lock_cmd = "pidof hyprlock || hyprlock";

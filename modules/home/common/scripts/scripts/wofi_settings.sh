@@ -10,7 +10,7 @@ declare -A commands
 # System & Connectivity
 commands["  Network"]="kitty --class floating --override color0=#1e1e2e -e nmtui &"
 commands["󰂰  Bluetooth"]="kitty --class floating -e bluetuith &"
-commands["󱋆  Display Settings"]="kitty --class floating -e hyprmon &"
+commands["󱋆  Display Settings"]="kitty --class floating -e hyprmon-apply &"
 commands["  Audio Control"]="kitty --class floating -e pulsemixer"
 
 # Caffeinate toggle
