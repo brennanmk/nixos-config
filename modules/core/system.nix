@@ -50,6 +50,7 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.permittedInsecurePackages = [
     "electron-39.8.10"
+    "firefox-esr-140-bin-unwrapped-140.17.0esr"
   ];
   system.stateVersion = "24.05";
 }

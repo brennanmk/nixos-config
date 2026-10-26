@@ -224,9 +224,10 @@
     };
 
     extraConfig = "
+      # DP-1 is portrait (transform 1) at scale 1.5, so it presents 1440x2560 --
+      # exactly the 0..1440 gap to the left of DP-2's origin.
+      monitor=DP-1,3840x2160,0x0,1.5,transform,1
       monitor=DP-2,3440x1440@165.00,1440x0,1
-      monitor=HDMI-A-1,3840x2160,0x0,1.5,transform,1
-      monitor=DP-1,3840x2160,4880x0,1.5,transform,3
 
       xwayland {
         force_zero_scaling = true
