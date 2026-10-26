@@ -25,6 +25,9 @@
     run install -m644 "${config.xdg.configFile."hypr/hyprland.lua".source}" "$HOME/.config/hypr/hyprland.lua"
   '';
 
+  # The activation copy above is a real file, so let HM overwrite it next time.
+  xdg.configFile."hypr/hyprland.lua".force = true;
+
   wayland.windowManager.hyprland = {
     extraConfig = ''
       ------------------
@@ -58,11 +61,11 @@
         hl.exec_cmd("hash dbus-update-activation-environment 2>/dev/null &")
         hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP &")
         hl.exec_cmd("${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent &")
-        hl.exec_cmd("nm-applet &")
         hl.exec_cmd("hyprctl setcursor Nordzy-cursors 22 &")
         hl.exec_cmd("poweralertd &")
         hl.exec_cmd("waybar &")
         hl.exec_cmd("mako &")
+        hl.exec_cmd("${pkgs.xhost}/bin/xhost +local:docker &") -- allow Docker GUI apps on Xwayland
         hl.exec_cmd("emacs --daemon")
         hl.exec_cmd("hyprlock")
       end)

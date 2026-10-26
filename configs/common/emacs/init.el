@@ -1,3 +1,4 @@
+;;; init.el --- Emacs configuration  -*- lexical-binding: t; -*-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Package Management
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -157,21 +158,21 @@
 (setq evil-want-C-u-scroll t)
 
 (setq evil-want-keybinding nil)
+;; evil-leader must be enabled *before* evil-mode, otherwise buffers that
+;; already exist (*scratch*, *Messages*) never get the leader map.
+(use-package evil-leader
+  :straight t
+  :init
+  (setq evil-leader/leader "<SPC>")
+  :config
+  (global-evil-leader-mode)
+  (evil-leader/set-leader evil-leader/leader))
+
 (use-package evil
   :straight t
   :config
   (evil-mode 1)
   (evil-set-undo-system 'undo-redo))
-
-(use-package evil-leader
-  :straight t
-  :config
-  (global-evil-leader-mode)
-  (with-eval-after-load 'Messages
-    (evil-leader-mode 1)
-    (evil-mode 1))
-  (setq evil-leader/leader "<SPC>")
-  (evil-leader/set-leader evil-leader/leader))
 
 (use-package evil-collection
   :straight t
@@ -307,6 +308,20 @@
   "c R" 'eglot-reconnect
   "c b" 'xref-go-back
   "c F" 'xref-go-forward
+
+  ;; --- DEBUG (DAPE) ---
+  "d d" 'dape
+  "d b" 'dape-breakpoint-toggle
+  "d B" 'dape-breakpoint-remove-all
+  "d c" 'dape-continue
+  "d n" 'dape-next
+  "d s" 'dape-step-in
+  "d o" 'dape-step-out
+  "d r" 'dape-restart
+  "d q" 'dape-quit
+  "d e" 'dape-evaluate-expression
+  "d w" 'dape-watch-dwim
+  "d i" 'dape-repl
 
   ;; --- Flyspell ---
   "e h" 'flyspell-correct-at-point
@@ -581,6 +596,47 @@ the user to select one."
   (eglot-booster-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Debugging (dape - Debug Adapter Protocol client)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; eglot-style DAP client (no lsp-mode dependency). For Python, the debugpy
+;; adapter runs from the Nix python env (which ships debugpy), while the
+;; debuggee runs under pet's per-project interpreter; the adapter injects
+;; debugpy itself, so project venvs don't need it installed.
+(use-package dape
+  :straight t
+  :config
+  (setq dape-buffer-window-arrangement 'right)
+  (setq dape-inlay-hints t)
+  ;; Click the fringe / margin to toggle breakpoints.
+  (dape-breakpoint-global-mode 1)
+  ;; Persist breakpoints across Emacs sessions.
+  (add-hook 'kill-emacs-hook #'dape-breakpoint-save)
+  (dape-breakpoint-load)
+
+  (defun my/dape-debugpy-adapter-python ()
+    "Python that runs the debugpy adapter.
+Locally, use the home-manager profile's python (has debugpy) rather than
+whatever direnv/pet put first on PATH; remotely, use the host's python3."
+    (let ((profile-python (format "/etc/profiles/per-user/%s/bin/python3"
+                                  user-login-name)))
+      (if (or (file-remote-p default-directory)
+              (not (file-executable-p profile-python)))
+          "python3"
+        profile-python)))
+
+  (defun my/dape-debugpy-debuggee-python ()
+    "Interpreter for the debugged program: pet's project venv, if any."
+    python-shell-interpreter)
+
+  (dolist (name '(debugpy debugpy-module))
+    (let ((config (alist-get name dape-configs)))
+      (setf (alist-get name dape-configs)
+            (thread-first config
+                          (plist-put 'command #'my/dape-debugpy-adapter-python)
+                          (plist-put :python #'my/dape-debugpy-debuggee-python))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Route Completions to Vertico
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -633,6 +689,38 @@ the user to select one."
 
 (use-package format-all
   :straight t)
+
+;; Per-file indentation style detection. editorconfig wins when a project
+;; ships a `.editorconfig' (explicit, authoritative); dtrt-indent guesses
+;; tabs/spaces and width from a buffer's existing content everywhere else.
+(use-package editorconfig
+  :straight t
+  :config
+  (editorconfig-mode 1))
+
+(use-package dtrt-indent
+  :straight t
+  :after editorconfig
+  :config
+  (dtrt-indent-global-mode 1)
+  ;; When editorconfig actually applies properties for a buffer, stop
+  ;; dtrt-indent from later re-guessing and clobbering them.
+  (add-hook 'editorconfig-after-apply-functions
+            (lambda (props)
+              (when (> (hash-table-count props) 0)
+                (dtrt-indent-mode -1)))))
+
+;; Render tab characters as a visible glyph so it's obvious at a glance
+;; whether a file is using tabs or spaces.
+(use-package whitespace
+  :ensure nil
+  :straight nil
+  :hook (prog-mode . whitespace-mode)
+  :config
+  (setq whitespace-style '(face tabs tab-mark))
+  (setq whitespace-display-mappings '((tab-mark ?\t [?▸ ?\t])))
+  (set-face-attribute 'whitespace-tab nil
+                       :foreground "#6272a4" :background 'unspecified))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Spell Checking (Aspell)
@@ -1133,12 +1221,12 @@ it joins the graph and full-text search. Use to migrate old notes."
         c-basic-offset 4)
 
   ;; Add useful hooks
+  ;; indent-tabs-mode is left alone here so editorconfig/dtrt-indent (see
+  ;; "Code Quality and Formatting") can decide tabs-vs-spaces per file.
   (add-hook 'c-mode-hook
             (lambda ()
-              (setq indent-tabs-mode nil)  ; Use spaces
               (setq show-trailing-whitespace t)))
 
   (add-hook 'c++-mode-hook
             (lambda ()
-              (setq indent-tabs-mode nil)
               (setq show-trailing-whitespace t))))

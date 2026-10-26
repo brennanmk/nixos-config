@@ -12,6 +12,8 @@
 
     settings = {
       confirm_os_window_close = 0;
+      # Don't restore the last window size/state (a maximized kitty made every new one open maximized).
+      remember_window_size = "no";
       window_padding_width = 10;
       scrollback_lines = 10000;
       enable_audio_bell = false;

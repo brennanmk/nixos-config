@@ -17,6 +17,9 @@
     virtio-win
     win-spice
     adwaita-icon-theme
+    docker-sbx
+    gvisor
+    xhost # lets Docker containers draw on the X(wayland) display
   ];
 
   # Manage the virtualisation services
@@ -28,6 +31,9 @@
       };
     };
     spiceUSBRedirection.enable = true;
+
+    # Register gVisor (runsc) as an additional Docker runtime
+    docker.daemon.settings.runtimes.runsc.path = "${pkgs.gvisor}/bin/runsc";
   };
   services.spice-vdagentd.enable = true;
 }
