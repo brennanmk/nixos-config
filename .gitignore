@@ -1,1 +1,10 @@
 .aider*
+
+# nix build outputs
+result
+result-*
+
+# syncthing folder markers / conflict copies
+.stfolder/
+.stversions/
+*.sync-conflict-*

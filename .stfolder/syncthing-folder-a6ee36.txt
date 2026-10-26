@@ -1,5 +1,0 @@
-# This directory is a Syncthing folder marker.
-# Do not delete.
-
-folderID: ue7ov-mpguu
-created: 2026-10-25T20:01:51-04:00

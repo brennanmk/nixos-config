@@ -1,0 +1,17 @@
+// Syncthing ignore patterns for this folder.
+// Must exist on EVERY device syncing it -- patterns are per-device, not synced.
+
+// Git metadata. Git rewrites refs/index on nearly every command, so two
+// devices touching the repo at once produce *.sync-conflict copies inside
+// .git and can clobber HEAD/refs across machines. Sync the working tree
+// only; move history around with `git push` / `git pull` instead.
+.git
+
+// Build outputs / local state -- machine-specific, never worth syncing.
+result
+result-*
+.direnv
+.devenv
+
+// Clean up any conflict copies that already exist.
+(?d)**.sync-conflict-*
