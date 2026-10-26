@@ -37,6 +37,11 @@ print_header() {
       ./install.sh              (Full install and configuration)
       ./install.sh --install    (Only runs the install step)
       ./install.sh --config     (Only runs the configuration step)
+
+    ${CYAN}Hosts:${NORMAL}
+      desktop      (Ryzen + RTX 3090)
+      laptop       (Ryzen 6800H + RTX 3070 Ti, PRIME offload)
+      work-laptop  (Core Ultra 9 + RTX PRO 2000 Blackwell, PRIME offload)
     "
 }
 
@@ -53,22 +58,83 @@ set_username() {
 }
 
 get_host() {
-    echo -en "Choose a ${GREEN}host${NORMAL}, either [${YELLOW}D${NORMAL}]esktop or [${YELLOW}L${NORMAL}]aptop: "
+    echo -en "Choose a ${GREEN}host${NORMAL}: [${YELLOW}D${NORMAL}]esktop, [${YELLOW}L${NORMAL}]aptop or [${YELLOW}W${NORMAL}]ork laptop: "
     read -n 1 -r
     echo
 
     if [[ $REPLY =~ ^[Dd]$ ]]; then
         HOST='desktop'
+        IS_LAPTOP=0
     elif [[ $REPLY =~ ^[Ll]$ ]]; then
         HOST='laptop'
+        IS_LAPTOP=1
+    elif [[ $REPLY =~ ^[Ww]$ ]]; then
+        HOST='work-laptop'
+        IS_LAPTOP=1
     else
-        echo "Invalid choice. Please select either 'D' for desktop or 'L' for laptop."
+        echo "Invalid choice. Please select 'D' for desktop, 'L' for laptop or 'W' for work laptop."
         exit 1
     fi
 
     echo -en "$NORMAL"
     echo -en "Use the$YELLOW "$HOST"$NORMAL ${GREEN}host${NORMAL} ? "
     confirm
+}
+
+# 0000:00:02.0 -> PCI:0:2:0  (nvidia expects decimal, lspci prints hex)
+pci_to_nix_bus_id() {
+    local addr="${1#0000:}"
+    local bus="${addr%%:*}"
+    local rest="${addr#*:}"
+    printf 'PCI:%d:%d:%d' "0x${bus}" "0x${rest%%.*}" "0x${rest#*.}"
+}
+
+# First PCI address whose *vendor/device description* matches $2. The class
+# string must be excluded from the match: "VGA compATIble controller" otherwise
+# false-matches an `ati` vendor pattern on every GPU line.
+gpu_addr_matching() {
+    echo "$1" | awk -F': ' -v re="$2" 'tolower($2) ~ re { split($1, f, " "); print f[1]; exit }'
+}
+
+# hardware.nvidia.prime.* bus IDs are per-machine, so read them off the running
+# hardware instead of trusting whatever is committed.
+set_prime_bus_ids() {
+    local nvidia_file="hosts/${HOST}/nvidia.nix"
+
+    if [ ! -f "$nvidia_file" ] || ! grep -q 'nvidiaBusId' "$nvidia_file"; then
+        return 0
+    fi
+
+    local gpus igpu_attr igpu_addr nvidia_addr igpu_id nvidia_id
+    # `|| true`: a missing vendor is a normal outcome here, not an error, and
+    # this must not blow up under `set -e` if the script is ever sourced.
+    gpus=$(lspci -D | grep -E 'VGA compatible controller|3D controller|Display controller' || true)
+    nvidia_addr=$(gpu_addr_matching "$gpus" 'nvidia')
+    igpu_addr=$(gpu_addr_matching "$gpus" 'intel')
+
+    if [ -n "$igpu_addr" ]; then
+        igpu_attr='intelBusId'
+    else
+        igpu_addr=$(gpu_addr_matching "$gpus" 'advanced micro devices|amd/ati')
+        igpu_attr='amdgpuBusId'
+    fi
+
+    if [ -z "$nvidia_addr" ] || [ -z "$igpu_addr" ]; then
+        echo -e "${YELLOW}Could not detect both GPUs; leaving PRIME bus IDs in ${MAGENTA}${nvidia_file}${YELLOW} alone.${NORMAL}"
+        return 0
+    fi
+
+    if ! grep -q "$igpu_attr" "$nvidia_file"; then
+        echo -e "${RED}${nvidia_file} has no ${igpu_attr} — this machine's iGPU vendor does not match the ${HOST} host config.${NORMAL}"
+        return 0
+    fi
+
+    igpu_id=$(pci_to_nix_bus_id "$igpu_addr")
+    nvidia_id=$(pci_to_nix_bus_id "$nvidia_addr")
+
+    echo -e "Writing detected PRIME bus IDs to ${MAGENTA}${nvidia_file}${NORMAL}: ${GREEN}${igpu_attr} = \"${igpu_id}\"${NORMAL}, ${GREEN}nvidiaBusId = \"${nvidia_id}\"${NORMAL}"
+    sed -i -E "s|(${igpu_attr}[[:space:]]*=[^\"]*\")[^\"]*\"|\1${igpu_id}\"|" "$nvidia_file"
+    sed -i -E "s|(nvidiaBusId[[:space:]]*=[^\"]*\")[^\"]*\"|\1${nvidia_id}\"|" "$nvidia_file"
 }
 
 install_desktop() {
@@ -78,6 +144,10 @@ install_desktop() {
     # Get the hardware configuration
     echo -e "Copying ${MAGENTA}/etc/nixos/hardware-configuration.nix${NORMAL} to ${MAGENTA}./hosts/${HOST}/${NORMAL}\n"
     cp /etc/nixos/hardware-configuration.nix hosts/${HOST}/hardware-configuration.nix
+    sleep 0.2
+
+    # Pin PRIME offload to this machine's actual PCI topology
+    set_prime_bus_ids
     sleep 0.2
 
     # Build the system (flakes + home manager)
@@ -93,7 +163,7 @@ configure_desktop() {
     echo -e "Creating folders:"
     mkdir -p ~/.local/bin
     mkdir -p ~/Pictures/wallpapers
-    mkdir -p ~/.config
+    mkdir -p ~/.config/emacs
     sleep 0.2
 
     echo -e "Linking ${MAGENTA}wallpapers${NORMAL}"
@@ -111,9 +181,9 @@ configure_desktop() {
     sleep 0.2
 
     # Conditionally link laptop-specific configs
-    if [ "$HOST" = "laptop" ]; then
-        echo -e "Linking ${MAGENTA}libinput gestures config${NORMAL} for laptop"
-        ln -sf "$PWD/configs/laptop/libinput-gestures.conf" ~/.config/libinput-gestures.conf
+    if [ "$IS_LAPTOP" = "1" ]; then
+        echo -e "Linking ${MAGENTA}libinput gestures config${NORMAL} for ${HOST}"
+        ln -sf "$PWD/configs/${HOST}/libinput-gestures.conf" ~/.config/libinput-gestures.conf
         sleep 0.2
     fi
 }

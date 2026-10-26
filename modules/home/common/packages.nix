@@ -3,31 +3,33 @@
   # Add npm global bin to PATH declaratively
   home.sessionPath = [ "$HOME/.npm-global/bin" ];
 
-  # Dracula theme for nmtui (newt color slots map to terminal palette)
+  # nmtui theme (newt color slots map to terminal palette; names are S-Lang's:
+  # gray = color8, lightgray = color7). Focus is always black-on-yellow so it
+  # stands out from Catppuccin's similar blue/cyan; entries get a gray bar.
   home.sessionVariables.NEWT_COLORS = ''
     root=white,black
     border=blue,black
     window=white,black
-    shadow=darkgrey,black
+    shadow=gray,black
     title=blue,black
-    button=black,cyan
-    actbutton=black,blue
+    button=white,gray
+    actbutton=black,yellow
+    compactbutton=white,black
     checkbox=white,black
-    actcheckbox=black,blue
-    entry=white,black
+    actcheckbox=black,yellow
+    entry=white,gray
+    disentry=lightgray,black
     label=cyan,black
     listbox=white,black
-    actlistbox=black,blue
+    actlistbox=black,yellow
+    sellistbox=yellow,black
+    actsellistbox=black,yellow
     textbox=white,black
-    acttextbox=black,cyan
-    helpline=darkgrey,black
+    acttextbox=black,yellow
+    helpline=gray,black
     roottext=blue,black
-    emptyscale=,black
+    emptyscale=,gray
     fullscale=,blue
-    disentry=darkgrey,black
-    compactbutton=black,cyan
-    actsellistbox=black,blue
-    sellistbox=blue,black
   '';
 
   home.packages = (
@@ -59,10 +61,12 @@
       antigravity-cli # replaces gemini-cli, which is being removed from nixpkgs
 
       # general appliactions
+      hyprpolkitagent # polkit auth agent; without one, GUI polkit prompts (fprintd enroll, etc.) fail closed
       firefox
       slack
       emacs-pgtk
       emacs-lsp-booster
+      vscode
 
       spotify
       feh
@@ -74,7 +78,19 @@
       polybar
       htop
       obs-studio
-      bitwarden-desktop
+      # On the PRIME laptops Chromium's GPU process picks up the NVIDIA EGL
+      # vendor and hands Hyprland (compositing on the Intel iGPU) dmabufs it
+      # can't import (EGL_BAD_MATCH), which hangs/aborts the compositor inside
+      # mesa as soon as the window renders. A password manager gains nothing
+      # from GPU compositing, so keep it off the GPU entirely.
+      (symlinkJoin {
+        name = "bitwarden-desktop";
+        paths = [ bitwarden-desktop ];
+        nativeBuildInputs = [ makeWrapper ];
+        postBuild = ''
+          wrapProgram $out/bin/bitwarden --add-flags --disable-gpu
+        '';
+      })
       sqlite
       prusa-slicer
       discord
@@ -107,7 +123,6 @@
       texliveFull
 
       davfs2
-      wofi
       picocom
       rclone
       wl-mirror
@@ -117,19 +132,19 @@
 
       (pkgs.python3.withPackages (ps: with ps; [
         black
+        debugpy # DAP adapter for Emacs `dape`
         setuptools
         packaging
+        west # Zephyr/MCUXpresso SDK meta-tool; VS Code's MCUXpresso extension probes `python3 -m west`
       ]))
       pkgs.ruff
+      pipx # install/run Python CLI apps in isolated venvs
+      uv # fast Python package / project manager
       basedpyright # Python LSP: type-checking, completion, navigation
       nixd # Nix LSP server
       dasel # used by Emacs `pet` to parse pyproject.toml / detect venvs
 
-      (aspellWithDicts (
-        dicts: with dicts; [
-          en
-        ]
-      ))
+      (aspellWithDicts (dicts: with dicts; [ en ]))
 
       jdt-language-server
       marksman

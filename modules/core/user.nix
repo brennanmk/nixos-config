@@ -6,12 +6,14 @@
     useGlobalPkgs = true;
     extraSpecialArgs = { inherit inputs username host; };
     users.${username} = {
-      imports = 
-        if (host == "desktop") then 
-          [ ./../home/desktop ]
-          ++ [./../home/common]
-        else [ ./../home/laptop ]
-              ++ [./../home/common];
+      imports = [
+        (
+          if host == "desktop" then ./../home/desktop
+          else if host == "work-laptop" then ./../home/work-laptop
+          else ./../home/laptop
+        )
+        ./../home/common
+      ];
       home.username = "${username}";
       home.homeDirectory = "/home/${username}";
       home.stateVersion = "25.05";

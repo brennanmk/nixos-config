@@ -14,7 +14,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    configType = "hyprlang"; # keep hyprlang syntax; new default is "lua" as of stateVersion 26.05
+    configType = "lua"; # hyprlang/.conf is deprecated since Hyprland 0.55; the Lua config is the current standard
     xwayland = {
       enable = true;
       # hidpi = true;

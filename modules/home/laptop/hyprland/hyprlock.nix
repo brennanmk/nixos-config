@@ -1,4 +1,4 @@
-{ pkgs, host, ... }:
+{ pkgs, lib, host, ... }:
 let
   text = "rgb(251, 241, 199)";
 in
@@ -25,6 +25,18 @@ in
         grace = 0
         disable_loading_bar = true
     }
+
+    ${lib.optionalString (host == "work-laptop") ''
+    # FINGERPRINT (Synaptics reader over fprintd, work-laptop only)
+    auth {
+        fingerprint {
+            enabled = true
+            ready_message = Scan fingerprint to unlock
+            present_message = Scanning...
+            retry_delay = 250
+        }
+    }
+    ''}
 
     # INPUT FIELD
     input-field {
